@@ -9,7 +9,6 @@ struct player_Node {
 };
 
 struct Player {
-
     enum player_Direction dir;
 
     ui32 size;

@@ -37,7 +37,7 @@ void player_init(ui32 x0, ui32 y0, ui32 len,
     }
 }
 
-void player_tick() {
+void player_tick(void) {
     struct player_Node *head = &player.head;
 
     struct Movement head_mov = dir_to_movement(player.dir);
@@ -95,7 +95,7 @@ static void set_trace(ui32 x, ui32 y, enum player_Direction dir) {
     player_traces[x + y * SCREEN_WIDTH] = dir;
 }
 
-void player_render() {
+void player_render(void) {
     screen_setchar(player.head.x, player.head.y, '#');
 
     for(ui32 i = 0; i < player.size; i++) {

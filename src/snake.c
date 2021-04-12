@@ -10,8 +10,6 @@
 ui32 tickCounter = 0;
 ui32 currentFPS = 0;
 
-bool debugMode = false;
-
 int main(int argc, const char *argv[]) {
     screen_init();
     player_init(10, 10, 2, DIRECTION_LEFT);
@@ -24,8 +22,12 @@ void tick(void) {
 }
 
 void render(void) {
-    screen_clear('.');
+    screen_clear(' ');
     player_render();
+
+    #ifdef DEBUG_MODE
+    screen_printf(1, 1, "%d fps", currentFPS);
+    #endif
 
     screen_render();
 }

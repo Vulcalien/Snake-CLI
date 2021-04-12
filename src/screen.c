@@ -6,6 +6,8 @@
 static char *screen_buffer;
 static ui32 screen_size;
 
+#define SCREEN_BORDER ('.')
+
 void screen_init(void) {
     screen_size = SCREEN_WIDTH * SCREEN_HEIGHT + SCREEN_HEIGHT - 1 + 1;
 
@@ -16,6 +18,11 @@ void screen_init(void) {
 void screen_render(void) {
     // clear screen
     fputs("\033[H\033[J", stdout);
+
+    screen_setchar(0,                0,                 SCREEN_BORDER);
+    screen_setchar(SCREEN_WIDTH - 1, 0,                 SCREEN_BORDER);
+    screen_setchar(0,                SCREEN_HEIGHT - 1, SCREEN_BORDER);
+    screen_setchar(SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1, SCREEN_BORDER);
 
     fputs(screen_buffer, stdout);
 }

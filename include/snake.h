@@ -7,7 +7,9 @@
 #include "vulcalien/vulcalien_core.h"
 
 // constants
-#define TPS 24
+#define TPS (24)
+
+#define DEBUG_MODE
 
 // variables
 extern ui32 tickCounter;

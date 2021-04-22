@@ -1,4 +1,3 @@
-#include "snake.h"
 #include "gameloop.h"
 #include "screen.h"
 

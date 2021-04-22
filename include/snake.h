@@ -10,12 +10,11 @@
 #define TPS (24)
 
 #define DEBUG_MODE
+// #define MALLOC_AND_FREE_TEST
 
 // variables
 extern ui32 tickCounter;
 extern ui32 currentFPS;
-
-extern bool debugMode;
 
 // functions
 extern void tick(void);

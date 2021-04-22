@@ -3,12 +3,12 @@
 
 #include "snake.h"
 
-#include <stdio.h>
-
 #define SCREEN_WIDTH  (50)
 #define SCREEN_HEIGHT (20)
 
 extern void screen_init(void);
+extern void screen_destroy(void);
+
 extern void screen_render(void);
 
 extern void screen_clear(char c);

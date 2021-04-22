@@ -1,6 +1,6 @@
-#include "snake.h"
 #include "screen.h"
 
+#include <stdio.h>
 #include <stdarg.h>
 
 static char *screen_buffer;
@@ -13,16 +13,27 @@ void screen_init(void) {
 
     screen_buffer = calloc(screen_size, sizeof(char));
     screen_clear(' ');
+
+    fputs("\033[?25l", stdout); // hide cursor
+    fputs("\033[2J", stdout);   // moves screen content up (fake "clear")
+}
+
+void screen_destroy(void) {
+    fputs("\033[?25h", stdout); // show cursor
+    fputs("\033[m", stdout);    // ???
+
+    free(screen_buffer);
 }
 
 void screen_render(void) {
-    // clear screen
-    fputs("\033[H\033[J", stdout);
+    fputs("\033[H", stdout);  // move to top left corner
 
-    screen_setchar(0,                0,                 SCREEN_BORDER);
-    screen_setchar(SCREEN_WIDTH - 1, 0,                 SCREEN_BORDER);
-    screen_setchar(0,                SCREEN_HEIGHT - 1, SCREEN_BORDER);
-    screen_setchar(SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1, SCREEN_BORDER);
+    #ifdef DEBUG_MODE
+        screen_setchar(0,                0,                 SCREEN_BORDER);
+        screen_setchar(SCREEN_WIDTH - 1, 0,                 SCREEN_BORDER);
+        screen_setchar(0,                SCREEN_HEIGHT - 1, SCREEN_BORDER);
+        screen_setchar(SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1, SCREEN_BORDER);
+    #endif // DEBUG_MODE
 
     fputs(screen_buffer, stdout);
 }

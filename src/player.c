@@ -1,7 +1,5 @@
-#include "snake.h"
 #include "player.h"
 #include "screen.h"
-
 #include "private/player_types.h"
 
 static void node_move(struct player_Node *node, struct Movement mov);
@@ -35,6 +33,11 @@ void player_init(ui32 x0, ui32 y0, ui32 len,
             .y = y0 - initial_movement.ym * (i + 1)
         };
     }
+}
+
+void player_destroy(void) {
+    free(player.body);
+    free(player_traces);
 }
 
 void player_tick(void) {

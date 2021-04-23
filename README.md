@@ -2,5 +2,6 @@
 
 This is a command line game I'm making to practice the C language.
 
-Copyright 2021 Vulcalien
-All Rights Reserved
+## Copyright
+Copyright 2021 Vulcalien\
+This program is free software. See NOTICE and LICENSE.

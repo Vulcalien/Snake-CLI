@@ -1,19 +1,11 @@
 #include "gameloop.h"
 #include "screen.h"
 
-#include <time.h>
-
-// platform-dependent
+// POSIX
 #include <unistd.h>
 
-#define NANOS_IN_SECOND     (1000000000)
 #define SLEEP_MICROSECONDS  (4 * 1000)
 #define NANOS_PER_TICK      (NANOS_IN_SECOND / TPS)
-
-static void loop_tick(void);
-static void loop_render(void);
-
-static ui64 nano_time(void);
 
 static bool running = false;
 
@@ -38,7 +30,7 @@ void gameloop(void) {
         while(unprocessedTime >= NANOS_PER_TICK) {
             unprocessedTime -= NANOS_PER_TICK;
 
-            loop_tick();
+            tick();
             tickCounter++;
             ticked = true;
 
@@ -48,29 +40,13 @@ void gameloop(void) {
             }
         }
         if(ticked) {
-            loop_render();
+            render();
             frames++;
         }
-
-        // this is not cross-platform
         usleep(SLEEP_MICROSECONDS);
     }
 }
 
 void gameloop_stop(void) {
     running = false;
-}
-
-static void loop_tick(void) {
-    tick();
-}
-
-static void loop_render(void) {
-    render();
-}
-
-static ui64 nano_time(void) {
-    struct timespec time;
-    clock_gettime(CLOCK_MONOTONIC, &time);
-    return time.tv_sec * NANOS_IN_SECOND + time.tv_nsec;
 }

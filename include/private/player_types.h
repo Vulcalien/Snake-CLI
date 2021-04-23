@@ -17,5 +17,4 @@ struct Player {
     struct player_Node *body;
 };
 
-
 #endif // VULC_SNAKECLI_PLAYER_TYPES

@@ -55,18 +55,10 @@ bool screen_setchar(ui32 x, ui32 y, char c) {
     return true;
 }
 
-void screen_printf(ui32 x, ui32 y, const char *format, ...) {
-    va_list args;
-    va_start(args, format);
-
-    char tmp[SCREEN_WIDTH + 1] = {0};
-    vsnprintf(tmp, SCREEN_WIDTH, format, args);
-
-    va_end(args);
-
+void screen_puts(ui32 x, ui32 y, const char *string) {
     ui32 xoff = 0;
     for(ui32 i = 0; true; i++) {
-        char c = tmp[i];
+        char c = string[i];
         if(c == '\0') {
             break;
         } else if(c == '\n') {
@@ -77,4 +69,16 @@ void screen_printf(ui32 x, ui32 y, const char *format, ...) {
         screen_setchar(x + xoff, y, c);
         xoff++;
     }
+}
+
+void screen_printf(ui32 x, ui32 y, const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+
+    char tmp[SCREEN_WIDTH + 1] = {0};
+    vsnprintf(tmp, SCREEN_WIDTH, format, args);
+
+    va_end(args);
+
+    screen_puts(x, y, tmp);
 }

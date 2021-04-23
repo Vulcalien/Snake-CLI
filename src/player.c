@@ -1,6 +1,7 @@
 #include "player.h"
 #include "screen.h"
 #include "input.h"
+#include "food.h"
 
 #include "private/player_types.h"
 
@@ -9,30 +10,38 @@ static void node_move(struct player_Node *node, struct player_Movement dir);
 static struct player_Movement get_trace(ui32 x, ui32 y);
 static void set_trace(ui32 x, ui32 y, struct player_Movement dir);
 
+static bool does_tile_contain_node(ui32 x, ui32 y);
+
 static struct Player player;
-
 static struct player_Movement *player_traces;
-static bool is_first_movement = true;
 
-void player_init(ui32 x0, ui32 y0, ui32 len,
+static bool has_moved = false;
+static bool should_grow = false;
+
+void player_init(ui32 x0, ui32 y0, ui32 size,
                  struct player_Movement dir) {
     player = (struct Player) {
         .dir = dir,
-        .size = len,
+        .size = size,
 
         .head = {x0, y0},
-        .body = malloc((len - 1) * sizeof(struct player_Node))
+        .body = malloc(SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(struct player_Node))
     };
     player_traces = malloc(SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(struct player_Movement));
     for(ui32 i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++) {
         player_traces[i] = DIRECTION_NONE;
     }
 
-    for(ui32 i = 0; i < len; i++) {
+    for(ui32 i = 0; i < size; i++) {
         player.body[i] = (struct player_Node) {
             .x = x0 - dir.xm * (i + 1),
             .y = y0 - dir.ym * (i + 1)
         };
+    }
+
+    for(ui32 i = 0; i < player.size; i++) {
+        struct player_Node *node = &player.body[i];
+        set_trace(node->x, node->y, player.dir);
     }
 }
 
@@ -42,32 +51,47 @@ void player_destroy(void) {
 }
 
 void player_tick(void) {
-    player.dir = input_dir;
-
     struct player_Node *head = &player.head;
 
-    if(is_first_movement) {
-        for(ui32 i = 0; i < player.size; i++) {
-            struct player_Node *node = &player.body[i];
-            set_trace(node->x, node->y, player.dir);
-        }
-        is_first_movement = false;
+    // get direction from the input handler
+    struct player_Movement new_dir = input_dir;
+    if(new_dir.xm == 0 && new_dir.ym == 0) return;
+
+    // change direction only if the player is
+    // not trying to rotate by 180 degrees
+    if(new_dir.xm != -player.dir.xm || new_dir.ym != -player.dir.ym) {
+        player.dir = new_dir;
+        has_moved = true;
     }
+    if(!has_moved) return;
+
     set_trace(head->x, head->y, player.dir);
     node_move(head, player.dir);
 
-    // check for food
+    if(does_tile_contain_node(head->x, head->y)) {
+        is_game_over = true;
+    }
+
+    if(food.x == head->x && food.y == head->y) {
+        should_grow = true;
+        food_spawn();
+        score++;
+    }
 
     for(ui32 i = 0; i < player.size; i++) {
         struct player_Node *node = &player.body[i];
-        // struct player_Node old_node = *node;
+        struct player_Node old_node = *node;
 
         struct player_Movement dir = get_trace(node->x, node->y);
         node_move(node, dir);
 
-        // if(i == player.size - 1) {
-        //     set_trace(old_node.x, old_node.y, DIRECTION_NONE);
-        // }
+        if(i == player.size - 1 && should_grow) {
+            player.size++;
+            should_grow = false;
+
+            player.body[player.size -1] = old_node;
+            break;
+        }
     }
 }
 
@@ -94,10 +118,25 @@ static void set_trace(ui32 x, ui32 y, struct player_Movement dir) {
 }
 
 void player_render(void) {
-    screen_setchar(player.head.x, player.head.y, '#');
-
     for(ui32 i = 0; i < player.size; i++) {
         struct player_Node node = player.body[i];
-        screen_setchar(node.x, node.y, 'O');
+        screen_setchar(node.x, node.y, '*');
     }
+
+    // render the head after the body, so when there is
+    // "game over", the head is rendered
+    screen_setchar(player.head.x, player.head.y, '@');
+}
+
+bool player_is_tile_free(ui32 x, ui32 y) {
+    if(player.head.x == x && player.head.y == y) return false;
+    return !does_tile_contain_node(x, y);
+}
+
+static bool does_tile_contain_node(ui32 x, ui32 y) {
+    for(ui32 i = 0; i < player.size; i++) {
+        struct player_Node node = player.body[i];
+        if(node.x == x && node.y == y) return true;
+    }
+    return false;
 }

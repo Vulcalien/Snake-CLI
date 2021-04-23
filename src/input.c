@@ -42,26 +42,34 @@ void input_tick(void) {
 }
 
 static void *receive_inputs(void *arg) {
+    ui32 escape_found = 0;
     while(true) {
         char c = getchar();
+        if(c == '\033') {
+            escape_found = 1;
+            continue;
+        }
 
-        switch (c) {
-        case 'w':
-        case 'W':
-            input_dir = DIRECTION_UP;
-            break;
-        case 'a':
-        case 'A':
-            input_dir = DIRECTION_LEFT;
-            break;
-        case 's':
-        case 'S':
-            input_dir = DIRECTION_DOWN;
-            break;
-        case 'd':
-        case 'D':
-            input_dir = DIRECTION_RIGHT;
-            break;
+        // "\033" was found, now check if [ is also there
+        if(escape_found == 1) {
+            if(c == '[') {
+                escape_found = 2;
+                continue;
+            } else {
+                escape_found = 0;
+            }
+        }
+
+        if(escape_found == 2) {
+            if(c == 'A') input_dir = DIRECTION_UP;
+            if(c == 'B') input_dir = DIRECTION_DOWN;
+            if(c == 'C') input_dir = DIRECTION_RIGHT;
+            if(c == 'D') input_dir = DIRECTION_LEFT;
+        } else {
+            if(c == 'w' || c == 'W') input_dir = DIRECTION_UP;
+            if(c == 'a' || c == 'A') input_dir = DIRECTION_LEFT;
+            if(c == 's' || c == 'S') input_dir = DIRECTION_DOWN;
+            if(c == 'd' || c == 'D') input_dir = DIRECTION_RIGHT;
         }
     }
     return NULL;
@@ -71,7 +79,8 @@ static void receive_signal_interrupt(int x) {
     gameloop_stop();
 }
 
-/* copied from https://github.com/mevdschee/2048.c
+/*
+ * copied from https://github.com/mevdschee/2048.c
  *
  * May not be an exact copy of the original code
  *

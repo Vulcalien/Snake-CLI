@@ -7,7 +7,11 @@
 #include "vulcalien/vulcalien_core.h"
 
 // constants
-#define TPS (24)
+#define TPS (16)
+#define NANOS_IN_SECOND (1000000000)
+
+#define STARTING_SIZE 5
+#define STARTING_DIRECTION DIRECTION_RIGHT
 
 #define DEBUG_MODE
 // #define MALLOC_AND_FREE_TEST
@@ -16,8 +20,14 @@
 extern ui32 tickCounter;
 extern ui32 currentFPS;
 
+extern ui32 score;
+
+extern bool is_game_over;
+
 // functions
 extern void tick(void);
 extern void render(void);
+
+extern ui64 nano_time(void);
 
 #endif // VULC_SNAKECLI_CORE

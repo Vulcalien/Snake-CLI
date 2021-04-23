@@ -11,8 +11,10 @@
 ui32 tickCounter = 0;
 ui32 currentFPS = 0;
 
-#include <termios.h>
+// POSIX
 #include <unistd.h>
+#include <termios.h>
+#include <pthread.h>
 
 int main(int argc, const char *argv[]) {
     #ifdef MALLOC_AND_FREE_TEST
@@ -30,17 +32,21 @@ int main(int argc, const char *argv[]) {
     screen_init();
     player_init(10, 10, 2, DIRECTION_LEFT);
 
+    input_thread_start();
     gameloop();
+    input_thread_stop();
 
     input_destroy();
     screen_destroy();
     player_destroy();
+
+    pthread_exit(NULL);
     return 0;
 }
 
 void tick(void) {
-    player_tick();
     input_tick();
+    player_tick();
 }
 
 void render(void) {

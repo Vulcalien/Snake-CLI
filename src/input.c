@@ -7,11 +7,20 @@
 // POSIX
 #include <unistd.h>
 #include <termios.h>
+#include <pthread.h>
+
+static void *receive_inputs(void *arg);
 
 static void setBufferedInput(bool enable);
 static void receive_signal_interrupt(int x);
 
+struct player_Movement input_dir;
+
+static pthread_t thread;
+
 void input_init(void) {
+    input_dir = DIRECTION_NONE;
+
     signal(SIGINT, receive_signal_interrupt);
     setBufferedInput(false);
 }
@@ -20,8 +29,42 @@ void input_destroy(void) {
     setBufferedInput(true);
 }
 
-void input_tick(void) {
+void input_thread_start(void) {
+    pthread_create(&thread, NULL, receive_inputs, NULL);
+}
 
+void input_thread_stop(void) {
+    pthread_cancel(thread);
+}
+
+void input_tick(void) {
+    // TODO
+}
+
+static void *receive_inputs(void *arg) {
+    while(true) {
+        char c = getchar();
+
+        switch (c) {
+        case 'w':
+        case 'W':
+            input_dir = DIRECTION_UP;
+            break;
+        case 'a':
+        case 'A':
+            input_dir = DIRECTION_LEFT;
+            break;
+        case 's':
+        case 'S':
+            input_dir = DIRECTION_DOWN;
+            break;
+        case 'd':
+        case 'D':
+            input_dir = DIRECTION_RIGHT;
+            break;
+        }
+    }
+    return NULL;
 }
 
 static void receive_signal_interrupt(int x) {

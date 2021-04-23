@@ -9,7 +9,7 @@ struct player_Node {
 };
 
 struct Player {
-    enum player_Direction dir;
+    struct player_Movement dir;
 
     ui32 size;
 
@@ -17,9 +17,5 @@ struct Player {
     struct player_Node *body;
 };
 
-struct Movement {
-    i32 xm;
-    i32 ym;
-};
 
 #endif // VULC_SNAKECLI_PLAYER_TYPES

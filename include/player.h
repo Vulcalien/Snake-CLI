@@ -3,17 +3,20 @@
 
 #include "snake.h"
 
-enum player_Direction {
-    DIRECTION_UP    = 0,
-    DIRECTION_LEFT  = 1,
-    DIRECTION_DOWN  = 2,
-    DIRECTION_RIGHT = 3,
+#define DIRECTION_UP    ((struct player_Movement) {0 , -1})
+#define DIRECTION_LEFT  ((struct player_Movement) {-1,  0})
+#define DIRECTION_DOWN  ((struct player_Movement) {0 , +1})
+#define DIRECTION_RIGHT ((struct player_Movement) {+1,  0})
 
-    DIRECTION_NONE  = 127
+#define DIRECTION_NONE  ((struct player_Movement) {0 ,  0})
+
+struct player_Movement {
+    i32 xm;
+    i32 ym;
 };
 
 extern void player_init(ui32 x0, ui32 y0, ui32 len,
-                        enum player_Direction dir);
+                        struct player_Movement dir);
 extern void player_destroy(void);
 
 extern void player_tick(void);

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2021 Vulcalien
+ * This program is free software. See NOTICE and LICENSE.
+ */
 #include "player.h"
 #include "screen.h"
 #include "input.h"

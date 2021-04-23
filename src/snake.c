@@ -1,8 +1,7 @@
 /*
  * Copyright 2021 Vulcalien
- * All Rights Reserved
+ * This program is free software. See NOTICE and LICENSE.
  */
-
 #include "snake.h"
 #include "gameloop.h"
 #include "screen.h"

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2021 Vulcalien
+ * This program is free software. See NOTICE and LICENSE.
+ */
 #include "screen.h"
 
 #include <stdio.h>

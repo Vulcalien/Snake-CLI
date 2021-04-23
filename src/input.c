@@ -1,3 +1,7 @@
+/*
+ * Copyright 2021 Vulcalien
+ * This program is free software. See NOTICE and LICENSE.
+ */
 #include "input.h"
 #include "gameloop.h"
 

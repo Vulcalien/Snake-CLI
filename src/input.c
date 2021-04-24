@@ -69,6 +69,8 @@ static void *receive_inputs(void *arg) {
             if(c == 'B') input_dir = DIRECTION_DOWN;
             if(c == 'C') input_dir = DIRECTION_RIGHT;
             if(c == 'D') input_dir = DIRECTION_LEFT;
+
+            escape_found = 0;
         } else {
             if(c == 'w' || c == 'W') input_dir = DIRECTION_UP;
             if(c == 'a' || c == 'A') input_dir = DIRECTION_LEFT;

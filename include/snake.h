@@ -1,6 +1,10 @@
 #ifndef VULC_SNAKECLI_CORE
 #define VULC_SNAKECLI_CORE
 
+#if !(defined(__unix__) || defined(_WIN32))
+    #error The system is not supported
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 

@@ -5,10 +5,15 @@
 #include "gameloop.h"
 #include "screen.h"
 
-// POSIX
-#include <unistd.h>
+// platform-dependent
+#ifdef __unix__
+    #include <unistd.h>
+#elif _WIN32
+    #include <windows.h>
+#endif
 
-#define SLEEP_MICROSECONDS  (4 * 1000)
+#define SLEEP_MILLISECONDS  (4)
+#define SLEEP_MICROSECONDS  (SLEEP_MILLISECONDS * 1000)
 #define NANOS_PER_TICK      (NANOS_IN_SECOND / TPS)
 
 static bool running = false;
@@ -47,7 +52,13 @@ void gameloop(void) {
             render();
             frames++;
         }
-        usleep(SLEEP_MICROSECONDS);
+
+        // platform-dependent
+        #ifdef __unix__
+            usleep(SLEEP_MICROSECONDS);
+        #elif _WIN32
+            Sleep(SLEEP_MILLISECONDS);
+        #endif
     }
 }
 

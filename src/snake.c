@@ -11,10 +11,12 @@
 
 #include <time.h>
 
-// POSIX
-#include <unistd.h>
-#include <termios.h>
-#include <pthread.h>
+// platform-dependent
+#ifdef __unix__
+    #include <pthread.h>
+#elif _WIN32
+    #include <windows.h>
+#endif
 
 ui32 tickCounter = 0;
 ui32 currentFPS = 0;
@@ -51,12 +53,17 @@ int main(int argc, const char *argv[]) {
     screen_destroy();
     player_destroy();
 
-    pthread_exit(NULL);
+    // platform-dependent
+    #ifdef __unix__
+        pthread_exit(NULL);
+    #elif _WIN32
+        // TODO windows thread exit
+    #endif
+
     return 0;
 }
 
 void tick(void) {
-    input_tick();
     player_tick();
 
     if(is_game_over) {

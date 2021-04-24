@@ -41,10 +41,6 @@ void input_thread_stop(void) {
     pthread_cancel(thread);
 }
 
-void input_tick(void) {
-    // TODO
-}
-
 static void *receive_inputs(void *arg) {
     ui32 escape_found = 0;
     while(true) {

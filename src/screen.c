@@ -30,7 +30,7 @@ void screen_destroy(void) {
 }
 
 void screen_render(void) {
-    fputs("\033[H", stdout);  // move to top left corner
+    fputs("\033[H", stdout); // move to top left corner
 
     #ifdef DEBUG_MODE
         screen_setchar(0,                0,                 SCREEN_BORDER);

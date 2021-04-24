@@ -124,7 +124,22 @@ static void set_trace(ui32 x, ui32 y, struct player_Movement dir) {
 void player_render(void) {
     for(ui32 i = 0; i < player.size; i++) {
         struct player_Node node = player.body[i];
-        screen_setchar(node.x, node.y, '*');
+        struct player_Movement mov = get_trace(node.x, node.y);
+
+        char c;
+        if(i == player.size - 1) {
+            if(mov.xm != 0) c = '-';
+            else            c = '|';
+        } else {
+            struct player_Node next = player.body[i + 1];
+            bool xdiff = (node.x - next.x) != 0;
+            bool ydiff = (node.y - next.y) != 0;
+
+            if     (mov.xm != 0 && xdiff) c = '-';
+            else if(mov.ym != 0 && ydiff) c = '|';
+            else                          c = '*';
+        }
+        screen_setchar(node.x, node.y, c);
     }
 
     // render the head after the body, so when there is

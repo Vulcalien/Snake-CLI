@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "compile_options.h"
 #include "vulcalien/vulcalien_core.h"
 
 // constants
@@ -12,9 +13,6 @@
 
 #define STARTING_SIZE 5
 #define STARTING_DIRECTION DIRECTION_RIGHT
-
-#define DEBUG_MODE
-// #define MALLOC_AND_FREE_TEST
 
 // variables
 extern ui32 tickCounter;

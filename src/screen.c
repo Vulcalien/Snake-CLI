@@ -7,8 +7,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#define SCREEN_BORDER ('.')
-
 static char *screen_buffer;
 static ui32 screen_size;
 
@@ -31,13 +29,6 @@ void screen_destroy(void) {
 
 void screen_render(void) {
     fputs("\033[H", stdout); // move to top left corner
-
-    #ifdef DRAW_CORNERS
-        screen_setchar(0,                0,                 SCREEN_BORDER);
-        screen_setchar(SCREEN_WIDTH - 1, 0,                 SCREEN_BORDER);
-        screen_setchar(0,                SCREEN_HEIGHT - 1, SCREEN_BORDER);
-        screen_setchar(SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1, SCREEN_BORDER);
-    #endif
 
     #ifdef COLORS
         for(ui32 i = 0; i < screen_size; i++) {

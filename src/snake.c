@@ -55,6 +55,13 @@ void tick(void) {
 void render(void) {
     screen_clear(' ');
 
+    #ifdef DRAW_CORNERS
+        screen_setchar(0,                0,                 SCREEN_BORDER);
+        screen_setchar(SCREEN_WIDTH - 1, 0,                 SCREEN_BORDER);
+        screen_setchar(0,                SCREEN_HEIGHT - 1, SCREEN_BORDER);
+        screen_setchar(SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1, SCREEN_BORDER);
+    #endif
+
     food_render();
     player_render();
 

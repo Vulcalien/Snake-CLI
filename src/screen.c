@@ -24,7 +24,7 @@ void screen_init(void) {
 
 void screen_destroy(void) {
     fputs("\033[?25h", stdout); // show cursor
-    fputs("\033[m", stdout);    // ???
+    fputs("\033[m", stdout);    // reset color
 
     free(screen_buffer);
 }

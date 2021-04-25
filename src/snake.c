@@ -11,12 +11,7 @@
 
 #include <time.h>
 
-// platform-dependent
-#ifdef __unix__
-    #include <pthread.h>
-#elif _WIN32
-    #include <windows.h>
-#endif
+#include <pthread.h>
 
 ui32 tickCounter = 0;
 ui32 currentFPS = 0;
@@ -53,13 +48,7 @@ int main(int argc, const char *argv[]) {
     screen_destroy();
     player_destroy();
 
-    // platform-dependent
-    #ifdef __unix__
-        pthread_exit(NULL);
-    #elif _WIN32
-        // TODO windows thread exit
-    #endif
-
+    pthread_exit(NULL);
     return 0;
 }
 

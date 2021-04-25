@@ -32,14 +32,27 @@ void screen_destroy(void) {
 void screen_render(void) {
     fputs("\033[H", stdout); // move to top left corner
 
-    #ifdef DEBUG_MODE
+    #ifdef DRAW_CORNERS
         screen_setchar(0,                0,                 SCREEN_BORDER);
         screen_setchar(SCREEN_WIDTH - 1, 0,                 SCREEN_BORDER);
         screen_setchar(0,                SCREEN_HEIGHT - 1, SCREEN_BORDER);
         screen_setchar(SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1, SCREEN_BORDER);
     #endif
 
-    fputs(screen_buffer, stdout);
+    #ifdef COLORS
+        for(ui32 i = 0; i < screen_size; i++) {
+            char c = screen_buffer[i];
+
+            if     (c == '@') fputs("\033[1;92m@\033[m", stdout);
+            else if(c == '-') fputs("\033[1;32m-\033[m", stdout);
+            else if(c == '|') fputs("\033[1;32m|\033[m", stdout);
+            else if(c == '*') fputs("\033[1;32m*\033[m", stdout);
+            else if(c == '$') fputs("\033[1;31m$\033[m", stdout);
+            else              fputc(c, stdout);
+        }
+    #else
+        fputs(screen_buffer, stdout);
+    #endif
 }
 
 void screen_clear(char c) {

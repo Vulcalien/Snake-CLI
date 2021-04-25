@@ -11,22 +11,20 @@
 #include "compile_options.h"
 #include "vulcalien/vulcalien_core.h"
 
-// constants
 #define TPS (16)
 #define NANOS_IN_SECOND (1000000000)
 
 #define STARTING_SIZE 5
 #define STARTING_DIRECTION DIRECTION_RIGHT
 
-// variables
-extern ui32 tickCounter;
-extern ui32 currentFPS;
+extern ui32 tick_counter;
+extern ui32 current_tps;
+extern ui32 current_fps;
 
 extern ui32 score;
 
 extern bool is_game_over;
 
-// functions
 extern void tick(void);
 extern void render(void);
 

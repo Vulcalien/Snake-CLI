@@ -1,6 +1,8 @@
 // compile-time options
 
 #define DEBUG_MODE
-// #define MALLOC_AND_FREE_TEST
+
+#define SLEEP_BETWEEN_TICKS
+// #define PERFORMANCE_THREAD
 
 #define COLORS

@@ -13,25 +13,15 @@
 
 #include <pthread.h>
 
-ui32 tickCounter = 0;
-ui32 currentFPS = 0;
+ui32 tick_counter = 0;
+ui32 current_tps = 0;
+ui32 current_fps = 0;
 
 ui32 score = 0;
 
 bool is_game_over = false;
 
 int main(int argc, const char *argv[]) {
-    #ifdef MALLOC_AND_FREE_TEST
-        for(int i = 0; i < 1000000000; i++) {
-            screen_init();
-            player_init(10, 10, 2, DIRECTION_LEFT);
-
-            screen_destroy();
-            player_destroy();
-        }
-        return 0;
-    #endif // MALLOC_AND_FREE_TEST
-
     // set random seed
     srand(nano_time());
 
@@ -78,8 +68,9 @@ void render(void) {
         screen_puts(1, SCREEN_HEIGHT - 2, "Made by Vulcalien");
     }
 
-    #ifdef DEBUG_MODE
-    screen_printf(1, 1, "%d fps", currentFPS);
+    #ifdef PERFORMANCE_THREAD
+        screen_printf(1, 1, "%d tps", current_tps);
+        screen_printf(1, 2, "%d fps", current_fps);
     #endif
 
     screen_render();

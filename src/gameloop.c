@@ -5,21 +5,30 @@
 #include "gameloop.h"
 #include "screen.h"
 
-// platform-dependent
-#ifdef __unix__
-    #include <unistd.h>
-#elif _WIN32
-    #include <windows.h>
+#include "vulcalien/sleep.h"
+
+#ifdef PERFORMANCE_THREAD
+    #include "pthread.h"
 #endif
 
 #define SLEEP_MILLISECONDS  (4)
-#define SLEEP_MICROSECONDS  (SLEEP_MILLISECONDS * 1000)
 #define NANOS_PER_TICK      (NANOS_IN_SECOND / TPS)
 
 static bool running = false;
 
+#ifdef PERFORMANCE_THREAD
+    static ui32 counter_ticks = 0;
+    static ui32 counter_frames = 0;
+
+    static pthread_t performance_thread;
+
+    static void *tps_counter(void *arg);
+#endif
+
 void gameloop(void) {
-    ui32 frames = 0;
+    #ifdef PERFORMANCE_THREAD
+        pthread_create(&performance_thread, NULL, tps_counter, NULL);
+    #endif
 
     ui64 lastTime = nano_time();
     ui64 unprocessedTime = NANOS_PER_TICK;
@@ -40,28 +49,42 @@ void gameloop(void) {
             unprocessedTime -= NANOS_PER_TICK;
 
             tick();
-            tickCounter++;
+            tick_counter++;
             ticked = true;
 
-            if(tickCounter % TPS == 0) {
-                currentFPS = frames;
-                frames = 0;
-            }
+            #ifdef PERFORMANCE_THREAD
+                counter_ticks++;
+            #endif
         }
         if(ticked) {
             render();
-            frames++;
+            #ifdef PERFORMANCE_THREAD
+                counter_frames++;
+            #endif
         }
-
-        // platform-dependent
-        #ifdef __unix__
-            usleep(SLEEP_MICROSECONDS);
-        #elif _WIN32
-            Sleep(SLEEP_MILLISECONDS);
+        #ifdef SLEEP_BETWEEN_TICKS
+            SLEEP(SLEEP_MILLISECONDS);
         #endif
     }
 }
 
 void gameloop_stop(void) {
     running = false;
+    #ifdef PERFORMANCE_THREAD
+        pthread_cancel(performance_thread);
+    #endif
 }
+
+#ifdef PERFORMANCE_THREAD
+    static void *tps_counter(void *arg) {
+        while(true) {
+            current_tps = counter_ticks;
+            current_fps = counter_frames;
+
+            counter_ticks = 0;
+            counter_frames = 0;
+            SLEEP(1000);
+        }
+        return NULL;
+    }
+#endif

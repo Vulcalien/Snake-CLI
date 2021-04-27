@@ -82,9 +82,3 @@ void render(void) {
 
     screen_render();
 }
-
-ui64 nano_time(void) {
-    struct timespec time;
-    clock_gettime(CLOCK_MONOTONIC, &time);
-    return time.tv_sec * NANOS_IN_SECOND + time.tv_nsec;
-}

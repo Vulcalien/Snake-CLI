@@ -1,11 +1,14 @@
 /*
  * Vulcalien's core header
  *
- * version : 2021.04.04
+ * version: 0.0.1
  */
-
 #ifndef VULC_VULCALIEN_CORE
 #define VULC_VULCALIEN_CORE
+
+#if !(defined(__unix__) || defined(_WIN32))
+    #error The system is not supported
+#endif
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -23,5 +26,19 @@ typedef uint32_t ui32;
 
 typedef int64_t  i64;
 typedef uint64_t ui64;
+
+// --- SLEEP macro
+
+#ifdef __unix__
+    #include <unistd.h>
+    #define SLEEP(millis) usleep(millis * 1000)
+#elif _WIN32
+    #include <windows.h>
+    #define SLEEP(millis) Sleep(millis)
+#endif
+
+// --- nano_time function
+
+extern ui64 nano_time(void);
 
 #endif // VULC_VULCALIEN_CORE

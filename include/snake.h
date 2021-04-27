@@ -9,7 +9,7 @@
 #include <string.h>
 
 #include "compile_options.h"
-#include "vulcalien/vulcalien_core.h"
+#include "vulcalien-core/vulcalien.h"
 
 #define TPS (16)
 #define NANOS_IN_SECOND (1000000000)
@@ -27,7 +27,5 @@ extern bool is_game_over;
 
 extern void tick(void);
 extern void render(void);
-
-extern ui64 nano_time(void);
 
 #endif // VULC_SNAKECLI_CORE

@@ -5,7 +5,7 @@
 #include "gameloop.h"
 #include "screen.h"
 
-#include "vulcalien/sleep.h"
+#include "vulcalien-core/vulcalien.h"
 
 #ifdef PERFORMANCE_THREAD
     #include "pthread.h"

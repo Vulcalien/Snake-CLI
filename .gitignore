@@ -2,5 +2,5 @@
 /.vscode/
 
 # Binary
-/snake
-/snake.exe
+/obj
+/bin

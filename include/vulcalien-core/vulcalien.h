@@ -1,7 +1,7 @@
 /*
- * Vulcalien's core header
+ * Vulcalien Core Library
  *
- * version: 0.0.1
+ * version: 0.0.2
  */
 #ifndef VULC_VULCALIEN_CORE
 #define VULC_VULCALIEN_CORE
@@ -15,17 +15,17 @@
 
 // --- Data Types ---
 
-typedef int8_t   i8;
-typedef uint8_t  ui8;
+typedef int8_t   i8;    // signed 8 bit integer
+typedef uint8_t  ui8;   // unsigned 8 bit integer
 
-typedef int16_t  i16;
-typedef uint16_t ui16;
+typedef int16_t  i16;   // signed 16 bit integer
+typedef uint16_t ui16;  // unsigned 16 bit integer
 
-typedef int32_t  i32;
-typedef uint32_t ui32;
+typedef int32_t  i32;   // signed 32 bit integer
+typedef uint32_t ui32;  // unsigned 32 bit integer
 
-typedef int64_t  i64;
-typedef uint64_t ui64;
+typedef int64_t  i64;   // signed 64 bit integer
+typedef uint64_t ui64;  // unsigned 64 bit integer
 
 // --- SLEEP macro
 
@@ -37,8 +37,8 @@ typedef uint64_t ui64;
     #define SLEEP(millis) Sleep(millis)
 #endif
 
-// --- nano_time function
+// --- nanotime function
 
-extern ui64 nano_time(void);
+extern ui64 nanotime(void);
 
 #endif // VULC_VULCALIEN_CORE

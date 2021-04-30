@@ -30,12 +30,12 @@ void gameloop(void) {
         pthread_create(&performance_thread, NULL, tps_counter, NULL);
     #endif
 
-    ui64 lastTime = nano_time();
+    ui64 lastTime = nanotime();
     ui64 unprocessedTime = NANOS_PER_TICK;
 
     running = true;
     while(running) {
-        ui64 now = nano_time();
+        ui64 now = nanotime();
         i64 passedTime = now - lastTime;
         lastTime = now;
 

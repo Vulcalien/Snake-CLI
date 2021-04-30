@@ -23,7 +23,7 @@ bool is_game_over = false;
 
 int main(int argc, const char *argv[]) {
     // set random seed
-    srand(nano_time());
+    srand(nanotime());
 
     input_init();
     screen_init();

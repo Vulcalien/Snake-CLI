@@ -14,7 +14,7 @@
     #include <unistd.h>
     #include <termios.h>
 #elif _WIN32
-    // #include <windows.h>
+    #include <windows.h>
 #endif
 
 static void *receive_inputs(void *arg);
@@ -85,6 +85,8 @@ static void receive_signal_interrupt(int x) {
     gameloop_stop();
 }
 
+// TODO find a better name for what this does and
+// consider moving this to its own file (terminal.c ???)
 #ifdef __unix__
     /*
     * copied from https://github.com/mevdschee/2048.c
@@ -110,8 +112,10 @@ static void receive_signal_interrupt(int x) {
             tcgetattr(STDIN_FILENO, &new);
             // we want to keep the old setting to restore them at the end
             old = new;
-            // disable canonical mode (buffered i/o) and local echo
-            new.c_lflag &=(~ICANON & ~ECHO);
+
+            new.c_lflag &= ~ICANON; // disable canonical mode (buffered i/o)
+            new.c_lflag &= ~ECHO;   // disable local echo
+
             // set the new settings immediately
             tcsetattr(STDIN_FILENO, TCSANOW, &new);
             // set the new state
@@ -119,7 +123,41 @@ static void receive_signal_interrupt(int x) {
         }
     }
 #elif _WIN32
+    // this code i'm writing, looks very stupid
     static void setBufferedInput(bool enable) {
-        // TODO windows compatibility
+        static bool enabled = true;
+        static DWORD oldOut;
+        static DWORD oldIn;
+
+        static HANDLE hOut = NULL;
+        static HANDLE hIn = NULL;
+        if(hOut == NULL) {
+            hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+            hIn  = GetStdHandle(STD_INPUT_HANDLE);
+        }
+
+        if(enable && !enabled) {
+            // i'm not sure if this works
+            SetConsoleMode(hOut, oldOut);
+            SetConsoleMode(hIn,  oldIn);
+            enabled = true;
+        } else if(!enable && enabled) {
+            DWORD newOut = 0;
+            DWORD newIn = 0;
+            GetConsoleMode(hOut, &newOut);
+            GetConsoleMode(hIn,  &newIn);
+
+            oldOut = newOut;
+
+            // enable ANSI escape codes
+            newOut |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+            SetConsoleMode(hOut, newOut);
+
+            newIn &= ~ENABLE_ECHO_INPUT;
+            newIn &= ~ENABLE_LINE_INPUT;
+            SetConsoleMode(hIn, newIn);
+
+            enabled = false;
+        }
     }
 #endif

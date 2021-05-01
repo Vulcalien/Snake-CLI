@@ -8,6 +8,7 @@
 #include "input.h"
 #include "player.h"
 #include "food.h"
+#include "terminal.h"
 
 #include <time.h>
 
@@ -25,6 +26,7 @@ int main(int argc, const char *argv[]) {
     // set random seed
     srand(nanotime());
 
+    terminal_init();
     input_init();
     screen_init();
     player_init(10, 10, STARTING_SIZE, STARTING_DIRECTION);
@@ -37,6 +39,7 @@ int main(int argc, const char *argv[]) {
     input_destroy();
     screen_destroy();
     player_destroy();
+    terminal_destroy();
 
     pthread_exit(NULL);
     return 0;

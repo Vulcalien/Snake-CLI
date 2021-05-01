@@ -1,5 +1,5 @@
 # Vulcalien's Executable Makefile
-# version 0.1.1
+# version 0.1.1 (modified)
 #
 # Supported systems:
 # - Linux
@@ -23,7 +23,7 @@ UNI_LDLIBS  := -lpthread -l:libvulcalien.a
 
 # Windows LDFLAGS and LDLIBS
 WIN_LDFLAGS := -Llib
-WIN_LDLIBS  := -lpthread -l:libvulcalien-win.a
+WIN_LDLIBS  := -l:libwinpthread.a -l:libvulcalien-win.a
 
 # ========= OS SPECIFIC =========
 UNI_OBJ_EXT := .o

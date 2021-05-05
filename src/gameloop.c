@@ -8,7 +8,7 @@
 #include "vulcalien-core/vulcalien.h"
 
 #ifdef PERFORMANCE_THREAD
-    #include "pthread.h"
+    #include <pthread.h>
 #endif
 
 #define SLEEP_MILLISECONDS  (4)

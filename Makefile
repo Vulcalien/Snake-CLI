@@ -8,7 +8,7 @@
 # Linux to Windows cross-compilation also supported
 
 # ========= CONFIG =========
-OUT_FILENAME := snake
+OUT_FILENAME := vulcalien-snake
 
 SRC_DIR := src
 OBJ_DIR := obj

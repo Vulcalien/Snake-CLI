@@ -39,6 +39,16 @@ static void *receive_inputs(void *arg) {
     ui32 escape_found = 0;
     while(true) {
         char c = getchar();
+
+        // if c is pause or enter
+        if(c == ' ' || c == '\n') {
+            is_game_paused = !is_game_paused;
+            continue;
+        }
+
+        // do not process any input if paused
+        if(is_game_paused) continue;
+
         if(c == '\033') {
             escape_found = 1;
             continue;

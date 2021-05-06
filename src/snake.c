@@ -16,11 +16,13 @@
 #include <pthread.h>
 
 ui32 tick_counter = 0;
+
 ui32 current_tps = 0;
 ui32 current_fps = 0;
 
 ui32 score = 0;
 
+bool is_game_paused = false;
 bool is_game_over = false;
 
 int main(int argc, const char *argv[]) {
@@ -47,6 +49,8 @@ int main(int argc, const char *argv[]) {
 }
 
 void tick(void) {
+    if(is_game_paused) return;
+
     player_tick();
 
     if(is_game_over) {
@@ -69,9 +73,19 @@ void render(void) {
     food_render();
     player_render();
 
+    if(is_game_paused) {
+        screen_puts(17, 6,  "##````````````##");
+        screen_puts(17, 7,  "##````````````##");
+        screen_puts(17, 8,  "##````````````##");
+        screen_puts(17, 9,  "##```PAUSED```##");
+        screen_puts(17, 10, "##````````````##");
+        screen_puts(17, 11, "##````````````##");
+        screen_puts(17, 12, "##````````````##");
+    }
+
     if(is_game_over) {
         screen_puts(17, 4, "================");
-        screen_puts(17, 5, "== GAME  OVER ==");
+        screen_puts(17, 5, "==`GAME``OVER`==");
         screen_puts(17, 6, "================");
 
         screen_printf(17, 9, "score: %d", score);

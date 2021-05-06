@@ -59,6 +59,9 @@ bool screen_setchar(ui32 x, ui32 y, char c) {
     if(x < 0 || x >= SCREEN_WIDTH) return false;
     if(y < 0 || y >= SCREEN_HEIGHT) return false;
 
+    // ` is transparent
+    if(c == '`') return false;
+
     screen_buffer[x + y * (SCREEN_WIDTH + 1)] = c;
     return true;
 }

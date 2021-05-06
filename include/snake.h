@@ -18,11 +18,13 @@
 #define STARTING_DIRECTION DIRECTION_RIGHT
 
 extern ui32 tick_counter;
+
 extern ui32 current_tps;
 extern ui32 current_fps;
 
 extern ui32 score;
 
+extern bool is_game_paused;
 extern bool is_game_over;
 
 extern void tick(void);

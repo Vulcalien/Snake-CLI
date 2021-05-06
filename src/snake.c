@@ -9,6 +9,7 @@
 #include "player.h"
 #include "food.h"
 #include "terminal.h"
+#include "highscore.h"
 
 #include <time.h>
 
@@ -69,12 +70,25 @@ void render(void) {
     player_render();
 
     if(is_game_over) {
-        screen_puts(17, 5, "================");
-        screen_puts(17, 6, "== GAME  OVER ==");
-        screen_puts(17, 7, "================");
+        screen_puts(17, 4, "================");
+        screen_puts(17, 5, "== GAME  OVER ==");
+        screen_puts(17, 6, "================");
 
         screen_printf(17, 9, "score: %d", score);
 
+        // highscore
+        ui32 highscore;
+        int err = highscore_get(&highscore);
+        if(!err) {
+            if(score > highscore) {
+                highscore_set(score);
+
+                screen_puts(17, 8, "new highscore!");
+            }
+            screen_printf(17, 10, "highscore: %d", highscore);
+        } else {
+            highscore_set(score);
+        }
         screen_puts(1, SCREEN_HEIGHT - 2, "Made by Vulcalien");
     }
 

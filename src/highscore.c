@@ -17,7 +17,13 @@
  */
 #include "highscore.h"
 
-#define VULCALIEN_DIR  "vulcalien/"
+#ifdef __unix__
+    #define PATH_SEPARATOR "/"
+#elif _WIN32
+    #define PATH_SEPARATOR "\\"
+#endif
+
+#define VULCALIEN_DIR  "vulcalien"
 #define SCORE_FILENAME "vulcalien-snake.score"
 
 #define READ_BUFFER_SIZE (1024)
@@ -33,6 +39,7 @@ static int open_file(const char *modes, FILE **file);
 static int close_file(FILE **file);
 
 static int add_to_path(char *dest, char *src, ui32 *remaining_space);
+static int add_separator(char *dest, ui32 *remaining_space);
 
 int highscore_get(ui32 *score) {
     int err;
@@ -105,7 +112,7 @@ int highscore_set(ui32 score) {
         strftime(
             time_buffer,
             TIME_BUFFER_SIZE,
-            "%F_%T",
+            "%Y-%m-%d_%H:%M:%S",
             timeinfo
         );
         fputs(time_buffer, file);
@@ -124,12 +131,22 @@ static int open_file(const char *modes, FILE **file) {
         char *path = calloc(PATH_MAX + 1, sizeof(char));
         ui32 space = PATH_MAX;
 
-        err = add_to_path(path, getenv("HOME"),  &space);
-        err = add_to_path(path, "/Documents/",   &space);
-        err = add_to_path(path, VULCALIEN_DIR,   &space);
-        err = add_to_path(path, SCORE_FILENAME,  &space);
+        err = add_to_path(path, getenv("HOME"), &space);
+        err = add_separator(path, &space);
+        err = add_to_path(path, "Documents",    &space);
+        err = add_separator(path, &space);
+        err = add_to_path(path, VULCALIEN_DIR,  &space);
+        err = add_separator(path, &space);
+        err = add_to_path(path, SCORE_FILENAME, &space);
     #elif _WIN32
-        char *path = "%APPDATA%/" VULCALIEN_DIR SCORE_FILENAME;
+        char *path = calloc(PATH_MAX + 1, sizeof(char));
+        ui32 space = PATH_MAX;
+
+        err = add_to_path(path, getenv("APPDATA"), &space);
+        err = add_separator(path, &space);
+        err = add_to_path(path, VULCALIEN_DIR,     &space);
+        err = add_separator(path, &space);
+        err = add_to_path(path, SCORE_FILENAME,    &space);
     #endif
 
     if(!err) {
@@ -139,7 +156,7 @@ static int open_file(const char *modes, FILE **file) {
             err = EOF;
         }
     }
-    free(path); // TODO only necessary for unix (at the moment)
+    free(path);
     return err;
 }
 
@@ -165,4 +182,8 @@ static int add_to_path(char *dest, char *src, ui32 *remaining_space) {
         strcat(dest, src);
     }
     return err;
+}
+
+static int add_separator(char *dest, ui32 *remaining_space) {
+    return add_to_path(dest, PATH_SEPARATOR, remaining_space);
 }

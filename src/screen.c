@@ -47,11 +47,21 @@ void screen_render(void) {
         for(ui32 i = 0; i < screen_size; i++) {
             char c = screen_buffer[i];
 
+            char *special_food_char;
+            if(c == '&') {
+                if(tick_counter / 6 % 2 == 0) {
+                    special_food_char = "\033[1;93m&\033[m";
+                } else {
+                    special_food_char = "\033[1;94m&\033[m";
+                }
+            }
+
             if     (c == '@') fputs("\033[1;92m@\033[m", stdout);
             else if(c == '-') fputs("\033[1;32m-\033[m", stdout);
             else if(c == '|') fputs("\033[1;32m|\033[m", stdout);
             else if(c == '*') fputs("\033[1;32m*\033[m", stdout);
             else if(c == '$') fputs("\033[1;31m$\033[m", stdout);
+            else if(c == '&') fputs(special_food_char,   stdout);
             else              fputc(c, stdout);
         }
     #else

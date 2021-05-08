@@ -34,7 +34,7 @@ static struct Player player;
 static struct player_Movement *player_traces;
 
 static bool has_moved = false;
-static bool should_grow = false;
+static ui32 should_grow = 0;
 
 void player_init(ui32 x0, ui32 y0, ui32 size,
                  struct player_Movement dir) {
@@ -91,9 +91,11 @@ void player_tick(void) {
     }
 
     if(food.x == head->x && food.y == head->y) {
-        should_grow = true;
+        ui32 food_value = food.is_special ? 3 : 1;
+
+        should_grow = food_value;
         food_spawn();
-        score++;
+        score += food_value;
     }
 
     for(ui32 i = 0; i < player.size; i++) {
@@ -105,7 +107,7 @@ void player_tick(void) {
 
         if(i == player.size - 1 && should_grow) {
             player.size++;
-            should_grow = false;
+            should_grow--;
 
             player.body[player.size -1] = old_node;
             break;

@@ -66,6 +66,7 @@ void tick(void) {
     if(is_game_paused) return;
 
     player_tick();
+    food_tick();
 
     if(is_game_over) {
         // even if gameloop was stopped

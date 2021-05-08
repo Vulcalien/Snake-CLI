@@ -28,14 +28,35 @@ void food_spawn(void) {
         ui32 y = rand() % SCREEN_HEIGHT;
 
         if(player_is_tile_free(x, y)) {
-            food.x = x;
-            food.y = y;
+            food = (struct food_Food) {
+                .x = x,
+                .y = y,
 
-            return;
+                .is_special = rand() % SPECIAL_FOOD_RARITY == 0
+            };
+            if(food.is_special) {
+                food.special_time_left = SPECIAL_FOOD_TIME;
+            }
+            break;
         }
     }
 }
 
+void food_tick(void) {
+    if(!food.is_special) return;
+    food.special_time_left--;
+    if(food.special_time_left == 0) {
+        food_spawn();
+    }
+}
+
 void food_render(void) {
-    screen_setchar(food.x, food.y, '$');
+    if(food.is_special) {
+        if(food.special_time_left > SPECIAL_FOOD_BLINK_TIME
+           || food.special_time_left / 3 % 2 == 0) {
+            screen_setchar(food.x, food.y, '&');
+        }
+    } else {
+        screen_setchar(food.x, food.y, '$');
+    }
 }

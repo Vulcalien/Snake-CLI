@@ -22,7 +22,6 @@
 #define SCREEN_BUFFER_SIZE (SCREEN_WIDTH * SCREEN_HEIGHT + SCREEN_HEIGHT - 1 + 1)
 
 static char *screen_buffer;
-static ui32 screen_size;
 
 void screen_init(void) {
     screen_buffer = calloc(SCREEN_BUFFER_SIZE, sizeof(char));

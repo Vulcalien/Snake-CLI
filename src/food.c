@@ -16,6 +16,7 @@
  */
 #include "food.h"
 
+#include "level.h"
 #include "screen.h"
 #include "player.h"
 
@@ -23,8 +24,8 @@ struct food_Food food;
 
 void food_spawn(void) {
     while(true) {
-        ui32 x = rand() % SCREEN_WIDTH;
-        ui32 y = rand() % SCREEN_HEIGHT;
+        ui32 x = rand() % LEVEL_WIDTH;
+        ui32 y = rand() % LEVEL_HEIGHT;
 
         if(player_is_tile_free(x, y)) {
             food = (struct food_Food) {

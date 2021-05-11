@@ -2,11 +2,10 @@
 #define VULC_SNAKECLI_SCREEN
 
 #include "snake.h"
+#include "level.h"
 
-#define SCREEN_WIDTH  (50)
-#define SCREEN_HEIGHT (20)
-
-#define SCREEN_BORDER ('.')
+#define SCREEN_WIDTH  (LEVEL_WIDTH)
+#define SCREEN_HEIGHT (LEVEL_HEIGHT + 1)
 
 extern void screen_init(void);
 extern void screen_destroy(void);

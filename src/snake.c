@@ -78,14 +78,16 @@ void render(void) {
     screen_clear(' ');
 
     #ifdef DRAW_CORNERS
-        screen_setchar(0,                0,                 SCREEN_BORDER);
-        screen_setchar(SCREEN_WIDTH - 1, 0,                 SCREEN_BORDER);
-        screen_setchar(0,                SCREEN_HEIGHT - 1, SCREEN_BORDER);
-        screen_setchar(SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1, SCREEN_BORDER);
+        screen_setchar(0,               0,                LEVEL_CORNER);
+        screen_setchar(LEVEL_WIDTH - 1, 0,                LEVEL_CORNER);
+        screen_setchar(0,               LEVEL_HEIGHT - 1, LEVEL_CORNER);
+        screen_setchar(LEVEL_WIDTH - 1, LEVEL_HEIGHT - 1, LEVEL_CORNER);
     #endif
 
     food_render();
     player_render();
+
+    screen_printf(0, SCREEN_HEIGHT - 1, "score: %d", score);
 
     if(is_game_paused) {
         screen_puts(17, 6,  "##````````````##");

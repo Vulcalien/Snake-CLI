@@ -1,0 +1,10 @@
+#ifndef VULC_SNAKECLI_LEVEL
+#define VULC_SNAKECLI_LEVEL
+
+#define LEVEL_WIDTH  (50)
+#define LEVEL_HEIGHT (20)
+#define LEVEL_SIZE   (LEVEL_WIDTH * LEVEL_HEIGHT)
+
+#define LEVEL_CORNER ('.')
+
+#endif // VULC_SNAKECLI_LEVEL

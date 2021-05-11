@@ -16,6 +16,7 @@
  */
 #include "player.h"
 
+#include "level.h"
 #include "screen.h"
 #include "input.h"
 #include "food.h"
@@ -42,10 +43,10 @@ void player_init(ui32 x0, ui32 y0, ui32 size,
         .size = size,
 
         .head = {x0, y0},
-        .body = malloc(SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(struct player_Node))
+        .body = malloc(LEVEL_SIZE * sizeof(struct player_Node))
     };
-    player_traces = malloc(SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(struct player_Movement));
-    for(ui32 i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++) {
+    player_traces = malloc(LEVEL_SIZE * sizeof(struct player_Movement));
+    for(ui32 i = 0; i < LEVEL_SIZE; i++) {
         player_traces[i] = DIRECTION_NONE;
     }
 
@@ -118,22 +119,22 @@ static void node_move(struct player_Node *node, struct player_Movement dir) {
     i32 xnew = node->x + dir.xm;
     i32 ynew = node->y + dir.ym;
 
-    if(xnew < 0) xnew = SCREEN_WIDTH - 1;
-    if(xnew >= SCREEN_WIDTH) xnew = 0;
+    if(xnew < 0) xnew = LEVEL_WIDTH - 1;
+    if(xnew >= LEVEL_WIDTH) xnew = 0;
 
-    if(ynew < 0) ynew = SCREEN_HEIGHT - 1;
-    if(ynew >= SCREEN_HEIGHT) ynew = 0;
+    if(ynew < 0) ynew = LEVEL_HEIGHT - 1;
+    if(ynew >= LEVEL_HEIGHT) ynew = 0;
 
     node->x = xnew;
     node->y = ynew;
 }
 
 static struct player_Movement get_trace(ui32 x, ui32 y) {
-    return player_traces[x + y * SCREEN_WIDTH];
+    return player_traces[x + y * LEVEL_WIDTH];
 }
 
 static void set_trace(ui32 x, ui32 y, struct player_Movement dir) {
-    player_traces[x + y * SCREEN_WIDTH] = dir;
+    player_traces[x + y * LEVEL_WIDTH] = dir;
 }
 
 void player_render(void) {

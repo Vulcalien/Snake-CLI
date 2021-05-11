@@ -19,13 +19,13 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#define SCREEN_BUFFER_SIZE (SCREEN_WIDTH * SCREEN_HEIGHT + SCREEN_HEIGHT - 1 + 1)
+
 static char *screen_buffer;
 static ui32 screen_size;
 
 void screen_init(void) {
-    screen_size = SCREEN_WIDTH * SCREEN_HEIGHT + SCREEN_HEIGHT - 1 + 1;
-
-    screen_buffer = calloc(screen_size, sizeof(char));
+    screen_buffer = calloc(SCREEN_BUFFER_SIZE, sizeof(char));
     screen_clear(' ');
 
     fputs("\033[?25l", stdout); // hide cursor
@@ -43,7 +43,7 @@ void screen_render(void) {
     fputs("\033[H", stdout); // move to top left corner
 
     #ifdef COLORS
-        for(ui32 i = 0; i < screen_size; i++) {
+        for(ui32 i = 0; i < SCREEN_BUFFER_SIZE; i++) {
             char c = screen_buffer[i];
 
             char *special_food_char;
@@ -69,7 +69,7 @@ void screen_render(void) {
 }
 
 void screen_clear(char c) {
-    for(ui32 i = 0; i < screen_size; i++) {
+    for(ui32 i = 0; i < SCREEN_BUFFER_SIZE; i++) {
         screen_buffer[i] = c;
     }
     for(ui32 i = 0; i < SCREEN_HEIGHT; i++) {

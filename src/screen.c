@@ -19,6 +19,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "level.h"
+
 #define SCREEN_BUFFER_SIZE (SCREEN_WIDTH * SCREEN_HEIGHT + SCREEN_HEIGHT - 1 + 1)
 
 static char *screen_buffer;
@@ -60,6 +62,7 @@ void screen_render(void) {
             else if(c == '*') fputs("\033[1;32m*\033[m", stdout);
             else if(c == '$') fputs("\033[1;31m$\033[m", stdout);
             else if(c == '&') fputs(special_food_char,   stdout);
+            else if(c == LEVEL_CORNER) fputs("\033[100m \033[m", stdout);
             else              fputc(c, stdout);
         }
     #else

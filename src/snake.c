@@ -129,3 +129,31 @@ void render(void) {
 
     screen_render();
 }
+
+// nanotime function
+#ifdef __unix__
+    #include <time.h>
+
+    ui64 nanotime(void) {
+        struct timespec time;
+        clock_gettime(CLOCK_MONOTONIC, &time);
+        return time.tv_sec * (1000 * 1000 * 1000) + time.tv_nsec;
+    }
+#elif _WIN32
+    #include <windows.h>
+
+    static ui64 frequency = 0;
+
+    ui64 nanotime(void) {
+        if(frequency == 0) {
+            LARGE_INTEGER freq;
+            QueryPerformanceFrequency(&freq);
+            frequency = freq.QuadPart;
+
+            if(frequency == 0) return 0;
+        }
+        LARGE_INTEGER counter;
+        QueryPerformanceCounter(&counter);
+        return counter.QuadPart * (1000 * 1000 * 1000) / frequency;
+    }
+#endif

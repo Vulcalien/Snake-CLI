@@ -19,11 +19,11 @@ CFLAGS   := -Wall -pedantic
 
 # Unix LDFLAGS and LDLIBS
 UNI_LDFLAGS := -Llib
-UNI_LDLIBS  := -lpthread -l:libvulcalien.a
+UNI_LDLIBS  := -lpthread
 
 # Windows LDFLAGS and LDLIBS
 WIN_LDFLAGS := -Llib
-WIN_LDLIBS  := -l:libwinpthread.a -l:libvulcalien-win.a
+WIN_LDLIBS  := -l:libwinpthread.a
 
 # ========= OS SPECIFIC =========
 UNI_OBJ_EXT := .o

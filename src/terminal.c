@@ -17,6 +17,7 @@
 #include "terminal.h"
 
 #ifdef __unix__
+    #include <unistd.h>
     #include <termios.h>
     #include <sys/ioctl.h>
 

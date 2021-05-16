@@ -16,8 +16,8 @@
  */
 #include "player.h"
 
+#include "vulcalien/screen.h"
 #include "level.h"
-#include "screen.h"
 #include "input.h"
 #include "food.h"
 
@@ -25,18 +25,18 @@
 
 static void node_move(struct player_Node *node, struct player_Movement dir);
 
-static struct player_Movement get_trace(ui32 x, ui32 y);
-static void set_trace(ui32 x, ui32 y, struct player_Movement dir);
+static struct player_Movement get_trace(u32 x, u32 y);
+static void set_trace(u32 x, u32 y, struct player_Movement dir);
 
-static bool does_tile_contain_node(ui32 x, ui32 y);
+static bool does_tile_contain_node(u32 x, u32 y);
 
 static struct Player player;
 static struct player_Movement *player_traces;
 
 static bool has_moved = false;
-static ui32 should_grow = 0;
+static u32 should_grow = 0;
 
-void player_init(ui32 x0, ui32 y0, ui32 size,
+void player_init(u32 x0, u32 y0, u32 size,
                  struct player_Movement dir) {
     player = (struct Player) {
         .dir = dir,
@@ -46,18 +46,18 @@ void player_init(ui32 x0, ui32 y0, ui32 size,
         .body = malloc(LEVEL_SIZE * sizeof(struct player_Node))
     };
     player_traces = malloc(LEVEL_SIZE * sizeof(struct player_Movement));
-    for(ui32 i = 0; i < LEVEL_SIZE; i++) {
+    for(u32 i = 0; i < LEVEL_SIZE; i++) {
         player_traces[i] = DIRECTION_NONE;
     }
 
-    for(ui32 i = 0; i < size; i++) {
+    for(u32 i = 0; i < size; i++) {
         player.body[i] = (struct player_Node) {
             .x = x0 - dir.xm * (i + 1),
             .y = y0 - dir.ym * (i + 1)
         };
     }
 
-    for(ui32 i = 0; i < player.size; i++) {
+    for(u32 i = 0; i < player.size; i++) {
         struct player_Node *node = &player.body[i];
         set_trace(node->x, node->y, player.dir);
     }
@@ -91,14 +91,14 @@ void player_tick(void) {
     }
 
     if(food.x == head->x && food.y == head->y) {
-        ui32 food_value = food.is_special ? 3 : 1;
+        u32 food_value = food.is_special ? 3 : 1;
 
         should_grow = food_value;
         food_spawn();
         score += food_value;
     }
 
-    for(ui32 i = 0; i < player.size; i++) {
+    for(u32 i = 0; i < player.size; i++) {
         struct player_Node *node = &player.body[i];
         struct player_Node old_node = *node;
 
@@ -129,16 +129,16 @@ static void node_move(struct player_Node *node, struct player_Movement dir) {
     node->y = ynew;
 }
 
-static struct player_Movement get_trace(ui32 x, ui32 y) {
+static struct player_Movement get_trace(u32 x, u32 y) {
     return player_traces[x + y * LEVEL_WIDTH];
 }
 
-static void set_trace(ui32 x, ui32 y, struct player_Movement dir) {
+static void set_trace(u32 x, u32 y, struct player_Movement dir) {
     player_traces[x + y * LEVEL_WIDTH] = dir;
 }
 
 void player_render(void) {
-    for(ui32 i = 0; i < player.size; i++) {
+    for(u32 i = 0; i < player.size; i++) {
         struct player_Node node = player.body[i];
         struct player_Movement mov = get_trace(node.x, node.y);
 
@@ -155,21 +155,21 @@ void player_render(void) {
             else if(mov.ym != 0 && ydiff) c = '|';
             else                          c = '*';
         }
-        screen_setchar(node.x, node.y, c);
+        screen_setchar(scr, node.x, node.y, c, "\033[1;32m");
     }
 
     // render the head after the body, so when there is
     // "game over", the head is rendered
-    screen_setchar(player.head.x, player.head.y, '@');
+    screen_setchar(scr, player.head.x, player.head.y, '@', "\033[1;92m");
 }
 
-bool player_is_tile_free(ui32 x, ui32 y) {
+bool player_is_tile_free(u32 x, u32 y) {
     if(player.head.x == x && player.head.y == y) return false;
     return !does_tile_contain_node(x, y);
 }
 
-static bool does_tile_contain_node(ui32 x, ui32 y) {
-    for(ui32 i = 0; i < player.size; i++) {
+static bool does_tile_contain_node(u32 x, u32 y) {
+    for(u32 i = 0; i < player.size; i++) {
         struct player_Node node = player.body[i];
         if(node.x == x && node.y == y) return true;
     }

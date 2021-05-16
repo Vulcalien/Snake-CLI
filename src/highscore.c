@@ -37,10 +37,10 @@
 static int open_file(const char *modes, FILE **file);
 static int close_file(FILE **file);
 
-static int add_to_path(char *dest, char *src, ui32 *remaining_space);
-static int add_separator(char *dest, ui32 *remaining_space);
+static int add_to_path(char *dest, char *src, u32 *remaining_space);
+static int add_separator(char *dest, u32 *remaining_space);
 
-int highscore_get(ui32 *score) {
+int highscore_get(u32 *score) {
     int err;
 
     FILE *file;
@@ -51,14 +51,14 @@ int highscore_get(ui32 *score) {
         char *buffer      = malloc(READ_BUFFER_SIZE * sizeof(char));
         char *line_buffer = malloc(LINE_BUFFER_SIZE * sizeof(char));
 
-        ui32 line_len = 0;
+        u32 line_len = 0;
         bool last_is_newline = false;
 
         while(true) {
-            ui32 read_n = fread(buffer, sizeof(char), READ_BUFFER_SIZE, file);
+            u32 read_n = fread(buffer, sizeof(char), READ_BUFFER_SIZE, file);
             if(read_n == 0) break;
 
-            for(ui32 i = 0; i < read_n; i++) {
+            for(u32 i = 0; i < read_n; i++) {
                 char c = buffer[i];
 
                 if(c == '\n') {
@@ -98,7 +98,7 @@ int highscore_get(ui32 *score) {
     return err;
 }
 
-int highscore_set(ui32 score) {
+int highscore_set(u32 score) {
     int err;
 
     FILE *file;
@@ -128,7 +128,7 @@ static int open_file(const char *modes, FILE **file) {
 
     #ifdef __unix__
         char *path = calloc(PATH_MAX + 1, sizeof(char));
-        ui32 space = PATH_MAX;
+        u32 space = PATH_MAX;
 
         err = add_to_path(path, getenv("HOME"), &space);
         err = add_separator(path, &space);
@@ -139,7 +139,7 @@ static int open_file(const char *modes, FILE **file) {
         err = add_to_path(path, SCORE_FILENAME, &space);
     #elif _WIN32
         char *path = calloc(PATH_MAX + 1, sizeof(char));
-        ui32 space = PATH_MAX;
+        u32 space = PATH_MAX;
 
         err = add_to_path(path, getenv("APPDATA"), &space);
         err = add_separator(path, &space);
@@ -169,10 +169,10 @@ static int close_file(FILE **file) {
     return err;
 }
 
-static int add_to_path(char *dest, char *src, ui32 *remaining_space) {
+static int add_to_path(char *dest, char *src, u32 *remaining_space) {
     int err = 0;
 
-    ui32 src_len = strlen(src);
+    u32 src_len = strlen(src);
     if(src_len > *remaining_space) {
         fputs("Error: PATH_MAX exceded\n", stderr);
         err = EOF;
@@ -183,6 +183,6 @@ static int add_to_path(char *dest, char *src, ui32 *remaining_space) {
     return err;
 }
 
-static int add_separator(char *dest, ui32 *remaining_space) {
+static int add_separator(char *dest, u32 *remaining_space) {
     return add_to_path(dest, PATH_SEPARATOR, remaining_space);
 }

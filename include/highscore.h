@@ -3,7 +3,7 @@
 
 #include "snake.h"
 
-extern int highscore_get(ui32 *score);
-extern int highscore_set(ui32 score);
+extern int highscore_get(u32 *score);
+extern int highscore_set(u32 score);
 
 #endif

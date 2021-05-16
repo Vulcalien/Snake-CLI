@@ -15,13 +15,13 @@ struct player_Movement {
     i32 ym;
 };
 
-extern void player_init(ui32 x0, ui32 y0, ui32 size,
+extern void player_init(u32 x0, u32 y0, u32 size,
                         struct player_Movement dir);
 extern void player_destroy(void);
 
 extern void player_tick(void);
 extern void player_render(void);
 
-extern bool player_is_tile_free(ui32 x, ui32 y);
+extern bool player_is_tile_free(u32 x, u32 y);
 
 #endif // VULC_SNAKECLI_PLAYER

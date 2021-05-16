@@ -4,4 +4,6 @@
 // #define PERFORMANCE_THREAD
 
 #define DRAW_CORNERS
-#define COLORS
+
+// colors are always on at the moment
+// #define COLORS

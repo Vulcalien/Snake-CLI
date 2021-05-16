@@ -24,37 +24,27 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "vulcalien/vulcalien.h"
 #include "compile_options.h"
-
-// --- Data Types ---
-#include <stdbool.h>
-#include <stdint.h>
-
-typedef int8_t   i8;    // signed 8 bit integer
-typedef uint8_t  ui8;   // unsigned 8 bit integer
-
-typedef int16_t  i16;   // signed 16 bit integer
-typedef uint16_t ui16;  // unsigned 16 bit integer
-
-typedef int32_t  i32;   // signed 32 bit integer
-typedef uint32_t ui32;  // unsigned 32 bit integer
-
-typedef int64_t  i64;   // signed 64 bit integer
-typedef uint64_t ui64;  // unsigned 64 bit integer
-// --- End of Data Types ---
+#include "level.h"
 
 #define TPS (16)
 #define NANOS_IN_SECOND (1000000000)
 
+#define SCREEN_WIDTH  (LEVEL_WIDTH)
+#define SCREEN_HEIGHT (LEVEL_HEIGHT + 1)
+
 #define STARTING_SIZE 5
 #define STARTING_DIRECTION DIRECTION_RIGHT
 
-extern ui32 tick_counter;
+extern struct screen *scr;
 
-extern ui32 current_tps;
-extern ui32 current_fps;
+extern u32 tick_counter;
 
-extern ui32 score;
+extern u32 current_tps;
+extern u32 current_fps;
+
+extern u32 score;
 
 extern bool is_game_paused;
 extern bool is_game_over;
@@ -74,6 +64,6 @@ extern void render(void);
     #define SLEEP(millis) Sleep(millis)
 #endif
 
-extern ui64 nanotime(void);
+extern u64 nanotime(void);
 
 #endif // VULC_SNAKECLI_CORE

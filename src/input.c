@@ -49,7 +49,7 @@ void input_thread_stop(void) {
 }
 
 static void *receive_inputs(void *arg) {
-    ui32 escape_found = 0;
+    u32 escape_found = 0;
     while(true) {
         char c = getchar();
 

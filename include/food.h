@@ -8,11 +8,11 @@
 #define SPECIAL_FOOD_RARITY     (8)
 
 struct food_Food {
-    ui32 x;
-    ui32 y;
+    u32 x;
+    u32 y;
 
     bool is_special;
-    ui32 special_time_left;
+    u32 special_time_left;
 };
 
 extern struct food_Food food;

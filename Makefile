@@ -19,11 +19,11 @@ CFLAGS   := -Wall -pedantic
 
 # Unix LDFLAGS and LDLIBS
 UNI_LDFLAGS := -Llib
-UNI_LDLIBS  := -lpthread
+UNI_LDLIBS  := -lpthread -l:libcliscreen.a
 
 # Windows LDFLAGS and LDLIBS
 WIN_LDFLAGS := -Llib
-WIN_LDLIBS  := -l:libwinpthread.a
+WIN_LDLIBS  := -l:libwinpthread.a -l:libcliscreen-win.a
 
 # ========= OS SPECIFIC =========
 UNI_OBJ_EXT := .o

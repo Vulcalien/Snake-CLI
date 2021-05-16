@@ -16,24 +16,25 @@
  */
 #include "snake.h"
 
+#include "vulcalien/screen.h"
 #include "gameloop.h"
-#include "screen.h"
 #include "input.h"
 #include "player.h"
 #include "food.h"
-#include "terminal.h"
 #include "highscore.h"
 
 #include <time.h>
 
 #include <pthread.h>
 
-ui32 tick_counter = 0;
+struct screen *scr;
 
-ui32 current_tps = 0;
-ui32 current_fps = 0;
+u32 tick_counter = 0;
 
-ui32 score = 0;
+u32 current_tps = 0;
+u32 current_fps = 0;
+
+u32 score = 0;
 
 bool is_game_paused = false;
 bool is_game_over = false;
@@ -42,9 +43,10 @@ int main(int argc, const char *argv[]) {
     // set random seed
     srand(nanotime());
 
-    terminal_init();
+    scr = screen_create(SCREEN_WIDTH, SCREEN_HEIGHT);
+    screen_terminal_prepare();
+
     input_init();
-    screen_init();
     player_init(10, 10, STARTING_SIZE, STARTING_DIRECTION);
     food_spawn();
 
@@ -53,9 +55,10 @@ int main(int argc, const char *argv[]) {
     input_thread_stop();
 
     input_destroy();
-    screen_destroy();
     player_destroy();
-    terminal_destroy();
+
+    screen_destroy(&scr);
+    screen_terminal_reset();
 
     pthread_exit(NULL);
     return 0;
@@ -75,66 +78,66 @@ void tick(void) {
 }
 
 void render(void) {
-    screen_clear(' ');
+    screen_clear(scr, ' ', NULL);
 
     #ifdef DRAW_CORNERS
-        screen_setchar(0,               0,                LEVEL_CORNER);
-        screen_setchar(LEVEL_WIDTH - 1, 0,                LEVEL_CORNER);
-        screen_setchar(0,               LEVEL_HEIGHT - 1, LEVEL_CORNER);
-        screen_setchar(LEVEL_WIDTH - 1, LEVEL_HEIGHT - 1, LEVEL_CORNER);
+        screen_setchar(scr, 0,               0,                ' ', "\033[100m");
+        screen_setchar(scr, LEVEL_WIDTH - 1, 0,                ' ', "\033[100m");
+        screen_setchar(scr, 0,               LEVEL_HEIGHT - 1, ' ', "\033[100m");
+        screen_setchar(scr, LEVEL_WIDTH - 1, LEVEL_HEIGHT - 1, ' ', "\033[100m");
     #endif
 
     food_render();
     player_render();
 
-    screen_printf(0, SCREEN_HEIGHT - 1, "score: %d", score);
+    screen_printf(scr, 0, SCREEN_HEIGHT - 1, NULL, "score: %d", score);
 
     if(is_game_paused) {
-        screen_puts(17, 6,  "##````````````##");
-        screen_puts(17, 7,  "##````````````##");
-        screen_puts(17, 8,  "##````````````##");
-        screen_puts(17, 9,  "##```PAUSED```##");
-        screen_puts(17, 10, "##````````````##");
-        screen_puts(17, 11, "##````````````##");
-        screen_puts(17, 12, "##````````````##");
+        screen_puts(scr, 17, 6,  "##````````````##", NULL);
+        screen_puts(scr, 17, 7,  "##````````````##", NULL);
+        screen_puts(scr, 17, 8,  "##````````````##", NULL);
+        screen_puts(scr, 17, 9,  "##```PAUSED```##", NULL);
+        screen_puts(scr, 17, 10, "##````````````##", NULL);
+        screen_puts(scr, 17, 11, "##````````````##", NULL);
+        screen_puts(scr, 17, 12, "##````````````##", NULL);
     }
 
     if(is_game_over) {
-        screen_puts(17, 4, "================");
-        screen_puts(17, 5, "==`GAME``OVER`==");
-        screen_puts(17, 6, "================");
+        screen_puts(scr, 17, 4, "================", NULL);
+        screen_puts(scr, 17, 5, "==`GAME``OVER`==", NULL);
+        screen_puts(scr, 17, 6, "================", NULL);
 
-        screen_printf(17, 9, "score: %d", score);
+        screen_printf(scr, 17, 9, NULL, "score: %d", score);
 
         // highscore
-        ui32 highscore;
+        u32 highscore;
         int err = highscore_get(&highscore);
         if(!err) {
             if(score > highscore) {
                 highscore_set(score);
 
-                screen_puts(17, 8, "new highscore!");
+                screen_puts(scr, 17, 8, "new highscore!", NULL);
             }
-            screen_printf(17, 10, "highscore: %d", highscore);
+            screen_printf(scr, 17, 10, NULL, "highscore: %d", highscore);
         } else {
             highscore_set(score);
         }
-        screen_puts(1, SCREEN_HEIGHT - 2, "Made by Vulcalien");
+        screen_puts(scr, 1, SCREEN_HEIGHT - 2, "Made by Vulcalien", NULL);
     }
 
     #ifdef PERFORMANCE_THREAD
-        screen_printf(1, 1, "%d tps", current_tps);
-        screen_printf(1, 2, "%d fps", current_fps);
+        screen_printf(scr, 1, 1, NULL, "%d tps", current_tps);
+        screen_printf(scr, 1, 2, NULL, "%d fps", current_fps);
     #endif
 
-    screen_render();
+    screen_render(scr);
 }
 
 // nanotime function
 #ifdef __unix__
     #include <time.h>
 
-    ui64 nanotime(void) {
+    u64 nanotime(void) {
         struct timespec time;
         clock_gettime(CLOCK_MONOTONIC, &time);
         return time.tv_sec * (1000 * 1000 * 1000) + time.tv_nsec;
@@ -142,9 +145,9 @@ void render(void) {
 #elif _WIN32
     #include <windows.h>
 
-    static ui64 frequency = 0;
+    static u64 frequency = 0;
 
-    ui64 nanotime(void) {
+    u64 nanotime(void) {
         if(frequency == 0) {
             LARGE_INTEGER freq;
             QueryPerformanceFrequency(&freq);

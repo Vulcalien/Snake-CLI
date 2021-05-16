@@ -16,8 +16,6 @@
  */
 #include "gameloop.h"
 
-#include "screen.h"
-
 #ifdef PERFORMANCE_THREAD
     #include <pthread.h>
 #endif
@@ -28,8 +26,8 @@
 static bool running = false;
 
 #ifdef PERFORMANCE_THREAD
-    static ui32 counter_ticks = 0;
-    static ui32 counter_frames = 0;
+    static u32 counter_ticks = 0;
+    static u32 counter_frames = 0;
 
     static pthread_t performance_thread;
 
@@ -41,12 +39,12 @@ void gameloop(void) {
         pthread_create(&performance_thread, NULL, tps_counter, NULL);
     #endif
 
-    ui64 lastTime = nanotime();
-    ui64 unprocessedTime = NANOS_PER_TICK;
+    u64 lastTime = nanotime();
+    u64 unprocessedTime = NANOS_PER_TICK;
 
     running = true;
     while(running) {
-        ui64 now = nanotime();
+        u64 now = nanotime();
         i64 passedTime = now - lastTime;
         lastTime = now;
 

@@ -4,14 +4,14 @@
 #include "player.h"
 
 struct player_Node {
-    ui32 x;
-    ui32 y;
+    u32 x;
+    u32 y;
 };
 
 struct Player {
     struct player_Movement dir;
 
-    ui32 size;
+    u32 size;
 
     struct player_Node head;
     struct player_Node *body;

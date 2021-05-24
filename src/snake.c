@@ -43,7 +43,9 @@ int main(int argc, const char *argv[]) {
     // set random seed
     srand(nanotime());
 
-    scr = screen_create(SCREEN_WIDTH, SCREEN_HEIGHT);
+    scr = screen_create();
+    screen_setsize(scr, SCREEN_WIDTH, SCREEN_HEIGHT);
+
     screen_terminal_prepare();
     screen_ignored_char(scr, '`');
 

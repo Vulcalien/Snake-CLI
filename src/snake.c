@@ -125,7 +125,7 @@ void render(void) {
         } else {
             highscore_set(score);
         }
-        screen_puts(scr, 1, SCREEN_HEIGHT - 2, "Made by Vulcalien", NULL);
+        screen_puts(scr, SCREEN_WIDTH - 17, SCREEN_HEIGHT - 1, "Made by Vulcalien", NULL);
     }
 
     #ifdef PERFORMANCE_THREAD

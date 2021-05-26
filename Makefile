@@ -1,5 +1,5 @@
 # Vulcalien's Executable Makefile
-# version 0.1.1 (modified)
+# version 0.1.2 (modified)
 #
 # Supported systems:
 # - Linux
@@ -40,8 +40,11 @@ ifeq ($(OS),Windows_NT)
 	LDFLAGS  := $(WIN_LDFLAGS)
 	LDLIBS   := $(WIN_LDLIBS)
 
+	MKDIR      := mkdir
+	MKDIRFLAGS :=
+
 	RM      := del
-	RMFLAGS := /Q
+	RMFLAGS := /Q /S
 else
 	CC      := gcc
 	OBJ_EXT := $(UNI_OBJ_EXT)
@@ -49,6 +52,9 @@ else
 
 	LDFLAGS  := $(UNI_LDFLAGS)
 	LDLIBS   := $(UNI_LDLIBS)
+
+	MKDIR      := mkdir
+	MKDIRFLAGS := -p
 
 	RM      := rm
 	RMFLAGS := -rfv
@@ -75,7 +81,7 @@ $(OBJ_DIR)/%$(OBJ_EXT): $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DEBUGFLAGS) -c $< -o $@
 
 $(BIN_DIR) $(OBJ_DIR):
-	mkdir $@
+	$(MKDIR) $(MKDIRFLAGS) "$@"
 
 clean:
 	@$(RM) $(RMFLAGS) $(BIN_DIR) $(OBJ_DIR)

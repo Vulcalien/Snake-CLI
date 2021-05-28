@@ -37,9 +37,6 @@
 static int open_file(const char *modes, FILE **file);
 static int close_file(FILE **file);
 
-static int add_to_path(char *dest, char *src, u32 *remaining_space);
-static int add_separator(char *dest, u32 *remaining_space);
-
 int highscore_get(u32 *score) {
     int err;
 
@@ -126,29 +123,32 @@ int highscore_set(u32 score) {
 static int open_file(const char *modes, FILE **file) {
     int err = 0;
 
+    char *path = malloc(PATH_MAX * sizeof(char));
+
+    int written;
     #ifdef __unix__
-        char *path = calloc(PATH_MAX + 1, sizeof(char));
-        u32 space = PATH_MAX;
-
-        err = add_to_path(path, getenv("HOME"), &space);
-        err = add_separator(path, &space);
-        err = add_to_path(path, "Documents",    &space);
-        err = add_separator(path, &space);
-        err = add_to_path(path, VULCALIEN_DIR,  &space);
-        err = add_separator(path, &space);
-        err = add_to_path(path, SCORE_FILENAME, &space);
+        written = snprintf(
+            path, PATH_MAX,
+            "%s" PATH_SEPARATOR
+                "Documents" PATH_SEPARATOR
+                VULCALIEN_DIR PATH_SEPARATOR
+                SCORE_FILENAME,
+            getenv("HOME")
+        );
     #elif _WIN32
-        char *path = calloc(PATH_MAX + 1, sizeof(char));
-        u32 space = PATH_MAX;
-
-        err = add_to_path(path, getenv("APPDATA"), &space);
-        err = add_separator(path, &space);
-        err = add_to_path(path, VULCALIEN_DIR,     &space);
-        err = add_separator(path, &space);
-        err = add_to_path(path, SCORE_FILENAME,    &space);
+        written = snprintf(
+            path, PATH_MAX,
+            "%s" PATH_SEPARATOR
+                VULCALIEN_DIR PATH_SEPARATOR
+                SCORE_FILENAME,
+            getenv("APPDATA")
+        );
     #endif
 
-    if(!err) {
+    if(written >= PATH_MAX) {
+        fputs("Error: PATH_MAX exceded\n", stderr);
+        err = EOF;
+    } else {
         *file = fopen(path, modes);
         if(*file == NULL) {
             fputs("Error: could not open score file\n", stderr);
@@ -167,22 +167,4 @@ static int close_file(FILE **file) {
         fputs("Error: could not close score file\n", stderr);
     }
     return err;
-}
-
-static int add_to_path(char *dest, char *src, u32 *remaining_space) {
-    int err = 0;
-
-    u32 src_len = strlen(src);
-    if(src_len > *remaining_space) {
-        fputs("Error: PATH_MAX exceded\n", stderr);
-        err = EOF;
-    } else {
-        *remaining_space -= src_len;
-        strcat(dest, src);
-    }
-    return err;
-}
-
-static int add_separator(char *dest, u32 *remaining_space) {
-    return add_to_path(dest, PATH_SEPARATOR, remaining_space);
 }

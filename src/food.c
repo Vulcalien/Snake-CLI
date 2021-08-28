@@ -56,9 +56,9 @@ void food_render(void) {
             char *col = tick_counter / 6 % 2 == 0 ? "\033[1;93m"
                                                   : "\033[1;94m";
 
-            screen_setchar(scr, food.x, food.y, '&', col);
+            screen_setchar(food.x, food.y, '&', col);
         }
     } else {
-        screen_setchar(scr, food.x, food.y, '$', "\033[1;31m");
+        screen_setchar(food.x, food.y, '$', "\033[1;31m");
     }
 }

@@ -154,12 +154,12 @@ void player_render(void) {
             else if(mov.ym != 0 && ydiff) c = '|';
             else                          c = '*';
         }
-        screen_setchar(scr, node.x, node.y, c, "\033[1;32m");
+        screen_setchar(node.x, node.y, c, "\033[1;32m");
     }
 
     // render the head after the body, so when there is
     // "game over", the head is rendered
-    screen_setchar(scr, player.head.x, player.head.y, '@', "\033[1;92m");
+    screen_setchar(player.head.x, player.head.y, '@', "\033[1;92m");
 }
 
 bool player_is_tile_free(u32 x, u32 y) {

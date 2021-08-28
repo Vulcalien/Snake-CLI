@@ -36,8 +36,6 @@
 #define STARTING_SIZE 5
 #define STARTING_DIRECTION DIRECTION_RIGHT
 
-extern struct screen *scr;
-
 extern u32 tick_counter;
 
 extern u32 current_tps;

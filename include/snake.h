@@ -49,9 +49,6 @@ extern bool is_game_over;
 extern void tick(void);
 extern void render(void);
 
-#include <stdbool.h>
-#include <stdint.h>
-
 // SLEEP macro
 #ifdef __unix__
     #include <unistd.h>

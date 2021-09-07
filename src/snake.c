@@ -133,6 +133,14 @@ void render(void) {
     screen_render();
 }
 
+// unix_sleep function
+#ifdef __unix__
+    #include <time.h>
+    void unix_sleep(struct timespec t) {
+        nanosleep(&t, NULL);
+    }
+#endif
+
 // nanotime function
 #ifdef __unix__
     #include <time.h>

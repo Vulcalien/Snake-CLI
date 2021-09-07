@@ -51,8 +51,13 @@ extern void render(void);
 
 // SLEEP macro
 #ifdef __unix__
-    #include <unistd.h>
-    #define SLEEP(millis) usleep(millis * 1000)
+    #include <time.h>
+    extern void unix_sleep(struct timespec t);
+    #define SLEEP(millis)\
+        unix_sleep((struct timespec) {\
+            .tv_sec  = millis / 1000,\
+            .tv_nsec = (millis % 1000) * 1000 * 1000\
+        })
 #elif _WIN32
     #include <windows.h>
     #define SLEEP(millis) Sleep(millis)

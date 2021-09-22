@@ -15,12 +15,6 @@
  */
 #include "highscore.h"
 
-#ifdef __unix__
-    #define PATH_SEPARATOR "/"
-#elif _WIN32
-    #define PATH_SEPARATOR "\\"
-#endif
-
 #define VULCALIEN_DIR  "vulcalien"
 #define SCORE_FILENAME "vulcalien-snake.score"
 
@@ -128,18 +122,13 @@ static int open_file(const char *modes, FILE **file) {
     #ifdef __unix__
         written = snprintf(
             path, PATH_MAX,
-            "%s" PATH_SEPARATOR
-                "Documents" PATH_SEPARATOR
-                VULCALIEN_DIR PATH_SEPARATOR
-                SCORE_FILENAME,
+            "%s/.local/share/" VULCALIEN_DIR "/" SCORE_FILENAME,
             getenv("HOME")
         );
     #elif _WIN32
         written = snprintf(
             path, PATH_MAX,
-            "%s" PATH_SEPARATOR
-                VULCALIEN_DIR PATH_SEPARATOR
-                SCORE_FILENAME,
+            "%s\\" VULCALIEN_DIR "\\" SCORE_FILENAME,
             getenv("APPDATA")
         );
     #endif

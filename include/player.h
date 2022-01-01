@@ -1,3 +1,17 @@
+/* Copyright 2021-2022 Vulcalien
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 only.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #ifndef VULC_SNAKECLI_PLAYER
 #define VULC_SNAKECLI_PLAYER
 
@@ -14,6 +28,22 @@ struct player_Movement {
     i32 xm;
     i32 ym;
 };
+
+struct player_Node {
+    u32 x;
+    u32 y;
+};
+
+struct Player {
+    struct player_Movement dir;
+
+    u32 size;
+
+    struct player_Node head;
+    struct player_Node *body;
+};
+
+extern struct Player player;
 
 extern void player_init(u32 x0, u32 y0, u32 size,
                         struct player_Movement dir);

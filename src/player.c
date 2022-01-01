@@ -1,4 +1,4 @@
-/* Copyright 2021 Vulcalien
+/* Copyright 2021-2022 Vulcalien
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,6 @@
 #include "input.h"
 #include "food.h"
 
-#include "private/player_types.h"
-
 static void node_move(struct player_Node *node, struct player_Movement dir);
 
 static struct player_Movement get_trace(u32 x, u32 y);
@@ -28,7 +26,7 @@ static void set_trace(u32 x, u32 y, struct player_Movement dir);
 
 static bool does_tile_contain_node(u32 x, u32 y);
 
-static struct Player player;
+struct Player player;
 static struct player_Movement *player_traces;
 
 static bool has_moved = false;
@@ -135,6 +133,48 @@ static void set_trace(u32 x, u32 y, struct player_Movement dir) {
     player_traces[x + y * LEVEL_WIDTH] = dir;
 }
 
+static inline void render_head(void) {
+     #ifdef FOLLOW_HEAD
+        #define HEAD_RENDER_X (LEVEL_WIDTH / 2)
+        #define HEAD_RENDER_Y (LEVEL_HEIGHT / 2)
+    #else
+        #define HEAD_RENDER_X (player.head.x)
+        #define HEAD_RENDER_Y (player.head.y)
+    #endif
+
+   screen_setchar(HEAD_RENDER_X, HEAD_RENDER_Y, '@', "\033[1;92m");
+
+    #undef HEAD_RENDER_X
+    #undef HEAD_RENDER_Y
+}
+
+static inline void render_node(u32 node_x, u32 node_y, char node_char) {
+    #ifdef FOLLOW_HEAD
+        i32 diff_x = node_x - player.head.x;
+        if(diff_x >= +LEVEL_WIDTH / 2)
+            diff_x -= LEVEL_WIDTH;
+        if(diff_x < -LEVEL_WIDTH / 2)
+            diff_x += LEVEL_WIDTH;
+
+        i32 diff_y = node_y - player.head.y;
+        if(diff_y >= +LEVEL_HEIGHT / 2)
+            diff_y -= LEVEL_HEIGHT;
+        if(diff_y < -LEVEL_HEIGHT / 2)
+            diff_y += LEVEL_HEIGHT;
+
+        #define NODE_RENDER_X (LEVEL_WIDTH / 2 + diff_x)
+        #define NODE_RENDER_Y (LEVEL_HEIGHT / 2 + diff_y)
+    #else
+        #define NODE_RENDER_X (node_x)
+        #define NODE_RENDER_Y (node_y)
+    #endif
+
+    screen_setchar(NODE_RENDER_X, NODE_RENDER_Y, node_char, "\033[1;32m");
+
+    #undef NODE_RENDER_X
+    #undef NODE_RENDER_Y
+}
+
 void player_render(void) {
     for(u32 i = 0; i < player.size; i++) {
         struct player_Node node = player.body[i];
@@ -153,12 +193,12 @@ void player_render(void) {
             else if(mov.ym != 0 && ydiff) c = '|';
             else                          c = '*';
         }
-        screen_setchar(node.x, node.y, c, "\033[1;32m");
+        render_node(node.x, node.y, c);
     }
 
     // render the head after the body, so when there is
     // "game over", the head is rendered
-    screen_setchar(player.head.x, player.head.y, '@', "\033[1;92m");
+    render_head();
 }
 
 bool player_is_tile_free(u32 x, u32 y) {

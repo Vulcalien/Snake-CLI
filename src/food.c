@@ -1,4 +1,4 @@
-/* Copyright 2021 Vulcalien
+/* Copyright 2021-2022 Vulcalien
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,33 @@ void food_tick(void) {
     }
 }
 
+static inline void render_food(char food_char, const char *food_color) {
+    #ifdef FOLLOW_HEAD
+        i32 diff_x = food.x - player.head.x;
+        if(diff_x >= +LEVEL_WIDTH / 2)
+            diff_x -= LEVEL_WIDTH;
+        if(diff_x < -LEVEL_WIDTH / 2)
+            diff_x += LEVEL_WIDTH;
+
+        i32 diff_y = food.y - player.head.y;
+        if(diff_y >= +LEVEL_HEIGHT / 2)
+            diff_y -= LEVEL_HEIGHT;
+        if(diff_y < -LEVEL_HEIGHT / 2)
+            diff_y += LEVEL_HEIGHT;
+
+        #define FOOD_RENDER_X (LEVEL_WIDTH / 2 + diff_x)
+        #define FOOD_RENDER_Y (LEVEL_HEIGHT / 2 + diff_y)
+    #else
+        #define FOOD_RENDER_X (food.x)
+        #define FOOD_RENDER_Y (food.y)
+    #endif
+
+    screen_setchar(FOOD_RENDER_X, FOOD_RENDER_Y, food_char, food_color);
+
+    #undef FOOD_RENDER_X
+    #undef FOOD_RENDER_Y
+}
+
 void food_render(void) {
     if(food.is_special) {
         if(food.special_time_left > SPECIAL_FOOD_BLINK_TIME
@@ -55,9 +82,9 @@ void food_render(void) {
             char *col = tick_counter / 6 % 2 == 0 ? "\033[1;93m"
                                                   : "\033[1;94m";
 
-            screen_setchar(food.x, food.y, '&', col);
+            render_food('&', col);
         }
     } else {
-        screen_setchar(food.x, food.y, '$', "\033[1;31m");
+        render_food('$', "\033[1;31m");
     }
 }

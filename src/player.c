@@ -15,10 +15,11 @@
  */
 #include "player.h"
 
-#include "vulcalien/screen.h"
 #include "level.h"
 #include "input.h"
 #include "food.h"
+
+#include <cliscreen.h>
 
 static void node_move(struct player_Node *node, struct player_Movement dir);
 
@@ -143,7 +144,7 @@ static inline void render_head(void) {
         #define HEAD_RENDER_Y (player.head.y)
     #endif
 
-   screen_setchar(HEAD_RENDER_X, HEAD_RENDER_Y, '@', "\033[1;92m");
+   cliscreen_setchar(HEAD_RENDER_X, HEAD_RENDER_Y, '@', "\033[1;92m");
 
     #undef HEAD_RENDER_X
     #undef HEAD_RENDER_Y
@@ -170,7 +171,7 @@ static inline void render_node(u32 node_x, u32 node_y, char node_char) {
         #define NODE_RENDER_Y (node_y)
     #endif
 
-    screen_setchar(NODE_RENDER_X, NODE_RENDER_Y, node_char, "\033[1;32m");
+    cliscreen_setchar(NODE_RENDER_X, NODE_RENDER_Y, node_char, "\033[1;32m");
 
     #undef NODE_RENDER_X
     #undef NODE_RENDER_Y

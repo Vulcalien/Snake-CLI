@@ -22,7 +22,7 @@ SRC_DIR := src
 OBJ_DIR := obj
 BIN_DIR := bin
 
-CPPFLAGS := -Iinclude -MMD -MP
+CPPFLAGS := -Iinclude -Iinclude/lib -MMD -MP
 CFLAGS   := -Wall -pedantic
 
 ifeq ($(TARGET_OS),UNIX)

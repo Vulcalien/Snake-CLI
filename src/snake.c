@@ -15,7 +15,6 @@
  */
 #include "snake.h"
 
-#include "vulcalien/screen.h"
 #include "gameloop.h"
 #include "input.h"
 #include "player.h"
@@ -24,6 +23,7 @@
 
 #include <time.h>
 
+#include <cliscreen.h>
 #include <pthread.h>
 
 u32 tick_counter = 0;
@@ -40,11 +40,11 @@ int main(int argc, const char *argv[]) {
     // set random seed
     srand(nanotime());
 
-    screen_create();
-    screen_setsize(SCREEN_WIDTH, SCREEN_HEIGHT);
+    cliscreen_create();
+    cliscreen_setsize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    screen_terminal_prepare();
-    screen_ignored_char('`');
+    cliscreen_terminal_prepare();
+    cliscreen_ignored_char('`');
 
     input_init();
     player_init(10, 10, STARTING_SIZE, STARTING_DIRECTION);
@@ -57,8 +57,8 @@ int main(int argc, const char *argv[]) {
     input_destroy();
     player_destroy();
 
-    screen_destroy();
-    screen_terminal_reset();
+    cliscreen_destroy();
+    cliscreen_terminal_reset();
 
     pthread_exit(NULL);
     return 0;
@@ -78,36 +78,36 @@ void tick(void) {
 }
 
 void render(void) {
-    screen_clear(' ', NULL);
+    cliscreen_clear(' ', NULL);
 
     #ifdef DRAW_CORNERS
-        screen_setchar(0,               0,                ' ', "\033[100m");
-        screen_setchar(LEVEL_WIDTH - 1, 0,                ' ', "\033[100m");
-        screen_setchar(0,               LEVEL_HEIGHT - 1, ' ', "\033[100m");
-        screen_setchar(LEVEL_WIDTH - 1, LEVEL_HEIGHT - 1, ' ', "\033[100m");
+        cliscreen_setchar(0,               0,                ' ', "\033[100m");
+        cliscreen_setchar(LEVEL_WIDTH - 1, 0,                ' ', "\033[100m");
+        cliscreen_setchar(0,               LEVEL_HEIGHT - 1, ' ', "\033[100m");
+        cliscreen_setchar(LEVEL_WIDTH - 1, LEVEL_HEIGHT - 1, ' ', "\033[100m");
     #endif
 
     food_render();
     player_render();
 
-    screen_printf(0, SCREEN_HEIGHT - 1, NULL, "score: %d", score);
+    cliscreen_printf(0, SCREEN_HEIGHT - 1, NULL, "score: %d", score);
 
     if(is_game_paused) {
-        screen_puts(17, 6,  "##````````````##", NULL);
-        screen_puts(17, 7,  "##````````````##", NULL);
-        screen_puts(17, 8,  "##````````````##", NULL);
-        screen_puts(17, 9,  "##```PAUSED```##", NULL);
-        screen_puts(17, 10, "##````````````##", NULL);
-        screen_puts(17, 11, "##````````````##", NULL);
-        screen_puts(17, 12, "##````````````##", NULL);
+        cliscreen_puts(17, 6,  "##````````````##", NULL);
+        cliscreen_puts(17, 7,  "##````````````##", NULL);
+        cliscreen_puts(17, 8,  "##````````````##", NULL);
+        cliscreen_puts(17, 9,  "##```PAUSED```##", NULL);
+        cliscreen_puts(17, 10, "##````````````##", NULL);
+        cliscreen_puts(17, 11, "##````````````##", NULL);
+        cliscreen_puts(17, 12, "##````````````##", NULL);
     }
 
     if(is_game_over) {
-        screen_puts(17, 4, "================", NULL);
-        screen_puts(17, 5, "==`GAME``OVER`==", NULL);
-        screen_puts(17, 6, "================", NULL);
+        cliscreen_puts(17, 4, "================", NULL);
+        cliscreen_puts(17, 5, "==`GAME``OVER`==", NULL);
+        cliscreen_puts(17, 6, "================", NULL);
 
-        screen_printf(17, 9, NULL, "score: %d", score);
+        cliscreen_printf(17, 9, NULL, "score: %d", score);
 
         // highscore
         u32 highscore;
@@ -116,21 +116,21 @@ void render(void) {
             if(score > highscore) {
                 highscore_set(score);
 
-                screen_puts(17, 8, "new highscore!", NULL);
+                cliscreen_puts(17, 8, "new highscore!", NULL);
             }
-            screen_printf(17, 10, NULL, "highscore: %d", highscore);
+            cliscreen_printf(17, 10, NULL, "highscore: %d", highscore);
         } else {
             highscore_set(score);
         }
-        screen_puts(SCREEN_WIDTH - 17, SCREEN_HEIGHT - 1, "Made by Vulcalien", NULL);
+        cliscreen_puts(SCREEN_WIDTH - 17, SCREEN_HEIGHT - 1, "Made by Vulcalien", NULL);
     }
 
     #ifdef PERFORMANCE_THREAD
-        screen_printf(1, 1, NULL, "%d tps", current_tps);
-        screen_printf(1, 2, NULL, "%d fps", current_fps);
+        cliscreen_printf(1, 1, NULL, "%d tps", current_tps);
+        cliscreen_printf(1, 2, NULL, "%d fps", current_fps);
     #endif
 
-    screen_render();
+    cliscreen_render();
 }
 
 // unix_sleep function

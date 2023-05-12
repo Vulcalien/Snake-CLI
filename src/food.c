@@ -15,9 +15,10 @@
  */
 #include "food.h"
 
-#include "vulcalien/screen.h"
 #include "level.h"
 #include "player.h"
+
+#include <cliscreen.h>
 
 struct food_Food food;
 
@@ -70,7 +71,7 @@ static inline void render_food(char food_char, const char *food_color) {
         #define FOOD_RENDER_Y (food.y)
     #endif
 
-    screen_setchar(FOOD_RENDER_X, FOOD_RENDER_Y, food_char, food_color);
+    cliscreen_setchar(FOOD_RENDER_X, FOOD_RENDER_Y, food_char, food_color);
 
     #undef FOOD_RENDER_X
     #undef FOOD_RENDER_Y

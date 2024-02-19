@@ -78,17 +78,21 @@ OUT := $(BIN_DIR)/$(OUT_FILENAME)$(OUT_EXT)
 OBJ_DIRECTORIES := $(OBJ_DIR) $(foreach DIR,$(SRC_SUBDIRS),$(OBJ_DIR)/$(DIR))
 
 # === TARGETS ===
-.PHONY: all run build clean
+.PHONY: all run build build-dependencies clean
 
-all: build run
+all: build-dependencies build run
 
 run:
 	./$(OUT)
 
 build: $(OUT)
 
+build-dependencies:
+	$(MAKE) -C lib/libcliscreen build-static
+
 clean:
 	@$(RM) $(RMFLAGS) $(BIN_DIR) $(OBJ_DIR)
+	$(MAKE) -C lib/libcliscreen clean
 
 $(OUT): $(OBJ) | $(BIN_DIR)
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@

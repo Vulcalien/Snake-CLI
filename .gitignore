@@ -2,8 +2,5 @@
 /obj
 /bin
 
-# Libraries
-/lib
-
 # vim
 *.swp

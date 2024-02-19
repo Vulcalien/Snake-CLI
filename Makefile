@@ -23,23 +23,24 @@ SRC_SUBDIRS :=
 
 CC := gcc
 
-CPPFLAGS := -Iinclude -Iinclude/lib -MMD -MP
+CPPFLAGS := -Iinclude -MMD -MP\
+            -Ilib/libcliscreen/include
 CFLAGS   := -Wall -pedantic
 
 ifeq ($(TARGET_OS),UNIX)
 	# UNIX
-	LDFLAGS := -Llib
+	LDFLAGS := -Llib/libcliscreen/bin
 	LDLIBS  := -lpthread -l:libcliscreen.a
 else ifeq ($(TARGET_OS),WINDOWS)
 	ifeq ($(CURRENT_OS),WINDOWS)
 		# WINDOWS
-		LDFLAGS := -Llib
+		LDFLAGS := -Llib/libcliscreen/bin
 		LDLIBS  := -l:libwinpthread.a -l:libcliscreen-win.a
 	else ifeq ($(CURRENT_OS),UNIX)
 		# UNIX to WINDOWS cross-compile
 		CC := x86_64-w64-mingw32-gcc
 
-		LDFLAGS := -Llib
+		LDFLAGS := -Llib/libcliscreen/bin
 		LDLIBS  := -l:libwinpthread.a -l:libcliscreen-win.a
 	endif
 endif

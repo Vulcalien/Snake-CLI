@@ -17,7 +17,7 @@ REMOVE_FILE := $(REMOVE)
 
 .PHONY: install uninstall
 
-install: build-dependencies build
+install: build-deps build
 	$(INSTALL_PROGRAM) bin/vulcalien-snake\
 		$(DESTDIR)$(BINDIR)/vulcalien-snake
 

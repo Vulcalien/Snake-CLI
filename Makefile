@@ -1,13 +1,7 @@
 # Vulcalien's Executable Makefile
-# version 0.3.2
+# version 0.3.5
 
-# === Detect OS ===
-ifeq ($(OS),Windows_NT)
-    CURRENT_OS := WINDOWS
-else
-    CURRENT_OS := UNIX
-endif
-TARGET_OS := $(CURRENT_OS)
+TARGET := UNIX
 
 # === Basic Info ===
 OUT_FILENAME := vulcalien-snake
@@ -23,64 +17,39 @@ CPPFLAGS := -Iinclude -MMD -MP\
             -Ilib/libcliscreen/include
 CFLAGS   := -Wall -pedantic
 
-ifeq ($(TARGET_OS),UNIX)
-    # UNIX
-    CC := gcc
+ASFLAGS :=
 
-    CPPFLAGS +=
-    CFLAGS   +=
+ifeq ($(TARGET),UNIX)
+    CC := gcc
+    AS := as
 
     LDFLAGS := -Llib/libcliscreen/bin
     LDLIBS  := -lpthread -l:libcliscreen.a
-else ifeq ($(TARGET_OS),WINDOWS)
-    ifeq ($(CURRENT_OS),WINDOWS)
-        # WINDOWS
-        CC := gcc
+else ifeq ($(TARGET),WINDOWS)
+    CC := x86_64-w64-mingw32-gcc
+    AS := x86_64-w64-mingw32-as
 
-        CPPFLAGS +=
-        CFLAGS   +=
-
-        LDFLAGS := -Llib/libcliscreen/bin
-        LDLIBS  := -l:libwinpthread.a -l:libcliscreen.win.a
-    else ifeq ($(CURRENT_OS),UNIX)
-        # UNIX to WINDOWS cross-compile
-        CC := x86_64-w64-mingw32-gcc
-
-        CPPFLAGS +=
-        CFLAGS   +=
-
-        LDFLAGS := -Llib/libcliscreen/bin
-        LDLIBS  := -l:libwinpthread.a -l:libcliscreen.win.a
-    endif
+    LDFLAGS := -Llib/libcliscreen/bin
+    LDLIBS  := -l:libwinpthread.a -l:libcliscreen.win.a
 endif
 
-# === Extensions & Commands ===
-ifeq ($(TARGET_OS),UNIX)
+# === Extensions ===
+ifeq ($(TARGET),UNIX)
     OBJ_EXT    := o
     OUT_SUFFIX :=
-else ifeq ($(TARGET_OS),WINDOWS)
+else ifeq ($(TARGET),WINDOWS)
     OBJ_EXT    := obj
     OUT_SUFFIX := .exe
 endif
 
-ifeq ($(CURRENT_OS),UNIX)
-    MKDIR      := mkdir
-    MKDIRFLAGS := -p
-
-    RM      := rm
-    RMFLAGS := -rfv
-else ifeq ($(CURRENT_OS),WINDOWS)
-    MKDIR      := mkdir
-    MKDIRFLAGS :=
-
-    RM      := rmdir
-    RMFLAGS := /Q /S
-endif
+# === Commands ===
+MKDIR := mkdir -p
+RM    := rm -rfv
 
 # === Resources ===
 
 # list of source file extensions
-SRC_EXT := c
+SRC_EXT := c s
 
 # list of source directories
 SRC_DIRS := $(SRC_DIR)\
@@ -102,21 +71,17 @@ OUT := $(BIN_DIR)/$(OUT_FILENAME)$(OUT_SUFFIX)
 
 # === Targets ===
 
-.PHONY: all run build build-dependencies clean
+.PHONY: all run build clean
 
-all: build-dependencies build run
+all: build-deps build
 
 run:
 	./$(OUT)
 
 build: $(OUT)
 
-build-dependencies:
-	$(MAKE) -C lib/libcliscreen build-static
-
-clean:
-	@$(RM) $(RMFLAGS) $(BIN_DIR) $(OBJ_DIR)
-	$(MAKE) -C lib/libcliscreen clean
+clean: clean-deps
+	@$(RM) $(BIN_DIR) $(OBJ_DIR)
 
 # generate output file
 $(OUT): $(OBJ) | $(BIN_DIR)
@@ -126,10 +91,20 @@ $(OUT): $(OBJ) | $(BIN_DIR)
 $(OBJ_DIR)/%.c.$(OBJ_EXT): %.c | $(OBJ_DIRS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
+# compile .s files
+$(OBJ_DIR)/%.s.$(OBJ_EXT): %.s | $(OBJ_DIRS)
+	$(AS) $(ASFLAGS) $< -o $@
+
 # create directories
 $(BIN_DIR) $(OBJ_DIRS):
-	$(MKDIR) $(MKDIRFLAGS) "$@"
+	$(MKDIR) "$@"
+
+.PHONY: build-deps clean-deps
+build-deps:
+	$(MAKE) -C lib/libcliscreen TARGET_OS=$(TARGET) build-static
+
+clean-deps:
+	$(MAKE) -C lib/libcliscreen clean
 
 -include $(OBJ:.$(OBJ_EXT)=.d)
-
 -include install.mk
